@@ -1,0 +1,78 @@
+package frc.robot.subsystems.drive;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.motors.IPositionControlMotor;
+import frc.robot.motors.IVelocityControlMotor;
+import frc.robot.sensors.encoders.IEncoder;
+
+public class Module implements IModule {
+
+    private final IVelocityControlMotor driveMotor;
+    private final IPositionControlMotor turnMotor;
+    private final IEncoder turnEncoder;
+    private final int index;
+
+    private SwerveModuleState state = new SwerveModuleState();
+
+    private Rotation2d angleSetpoint = new Rotation2d();
+    private double speedSetpoint = 0.0;
+
+    private boolean isTurnEncoderZeroed = false;
+
+    private SimpleMotorFeedforward ffModel =
+        new SimpleMotorFeedforward(DriveConstants.driveKs, DriveConstants.driveKv); // TODO: replace
+
+    public Module(IVelocityControlMotor driveMotor, IPositionControlMotor turnMotor, IEncoder turnEncoder, int index) {
+        this.driveMotor = driveMotor;
+        this.turnMotor = turnMotor;
+        this.turnEncoder = turnEncoder;
+        this.index = index;
+    }
+
+    public void runSetpoint(SwerveModuleState state) {
+        angleSetpoint = state.angle;
+        speedSetpoint = state.speedMetersPerSecond;
+    }
+
+    public Rotation2d getAngle() {
+        return new Rotation2d(turnEncoder.getPosition());
+    }
+
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(speedSetpoint, angleSetpoint);
+    }
+
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(driveMotor.getPosition() * ModuleConstants.WHEEL_RADIUS, new Rotation2d(turnEncoder.getPosition()));
+    }
+
+    @Override
+    public void periodic() {
+        // Optimize velocity setpoint
+        state.optimize(getAngle());
+        state.cosineScale(getAngle());
+
+        // On first cycle, reset relative turn encoder
+        // Wait until absolute angle is nonzero in case it wasn't initialized yet
+        checkAndZeroTurnEncoder();
+
+        if (angleSetpoint != null && isTurnEncoderZeroed) {
+            turnMotor.runPosition(angleSetpoint.getRadians());
+            driveMotor.runVelocity(speedSetpoint, ffModel.calculate(speedSetpoint)); // TODO: move ff into pid
+        }
+
+        // LOGGING ------------------------------------------------------------------------------
+        SmartDashboard.putBoolean("Swerve module " + index + " canCoderStatus:", isTurnEncoderZeroed);
+    }
+
+    private void checkAndZeroTurnEncoder() {
+        if (!isTurnEncoderZeroed && turnEncoder.getStatus().isOK()) {
+            turnMotor.zeroPosition(turnEncoder.getPosition());
+            isTurnEncoderZeroed = true;
+        }
+    }
+}
