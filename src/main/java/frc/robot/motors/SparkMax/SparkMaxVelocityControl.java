@@ -10,11 +10,11 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
-import frc.robot.motors.IVelocityControlMotor;
+import frc.robot.motors.IMotorVelocityControl;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class VelocityControlSparkMax extends SparkMaxDiagnostics implements IVelocityControlMotor {
+public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVelocityControl {
 
     private final SparkMaxConfig config;;
 
@@ -40,7 +40,7 @@ public class VelocityControlSparkMax extends SparkMaxDiagnostics implements IVel
      * @param kA the acceleration gain for the feedforward controller
      * @return
      */
-    public IVelocityControlMotor CreateSparkMaxPositionController(
+    public IMotorVelocityControl CreateSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
@@ -54,7 +54,7 @@ public class VelocityControlSparkMax extends SparkMaxDiagnostics implements IVel
         double kV,
         double kA
     ) {
-        return new VelocityControlSparkMax(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP,0, 0, kS, kV, kA);
+        return new SparkMaxVelocityControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP,0, 0, kS, kV, kA);
     }
 
 
@@ -76,7 +76,7 @@ public class VelocityControlSparkMax extends SparkMaxDiagnostics implements IVel
      * @param kA the acceleration gain for the feedforward controller
      * @return
      */
-    public IVelocityControlMotor OverloadCreateSparkMaxPositionController(
+    public IMotorVelocityControl OverloadCreateSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
@@ -92,7 +92,7 @@ public class VelocityControlSparkMax extends SparkMaxDiagnostics implements IVel
         double kV,
         double kA
     ) {
-        return new VelocityControlSparkMax(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA);
+        return new SparkMaxVelocityControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA);
     }
 
     /**
@@ -111,7 +111,7 @@ public class VelocityControlSparkMax extends SparkMaxDiagnostics implements IVel
      * @param kV
      * @param kA
      */
-    private VelocityControlSparkMax(int deviceID,
+    private SparkMaxVelocityControl(int deviceID,
         MotorType type,
         boolean isInverted,
         double positionConversionFactor,

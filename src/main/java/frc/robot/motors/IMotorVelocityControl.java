@@ -1,6 +1,6 @@
 package frc.robot.motors;
 
-public interface IVelocityControlMotor extends IMotorDiagnostics {
+public interface IMotorVelocityControl extends IMotorBase {
     
     /**
      * Runs the motor at the specified velocity setpoint.

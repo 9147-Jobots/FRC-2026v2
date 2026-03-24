@@ -1,9 +1,6 @@
 package frc.robot.motors;
 
-import com.revrobotics.spark.SparkBase.Faults;
-import com.revrobotics.spark.SparkBase.Warnings;
-
-public interface IMotorDiagnostics {
+public interface IMotorBase {
 
     /**
      * Returns the current velocity of the motor.
@@ -34,16 +31,4 @@ public interface IMotorDiagnostics {
      * @return the voltage supplied to the motor in volts
      */
     public double getVoltage();
-
-    /**
-     * Returns the current faults of the motor.
-     * @return the current faults of the motor
-     */
-    public Faults getFaults();
-
-    /**
-     * Returns the current warnings of the motor.
-     * @return the current warnings of the motor
-     */
-    public Warnings getWarnings();
 }

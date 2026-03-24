@@ -4,7 +4,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
-import frc.robot.motors.IPositionControlMotor;
+import frc.robot.motors.IMotorPositionControl;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -13,7 +13,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
 
-public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPositionControlMotor {
+public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPositionControl {
 
     private final SparkMaxConfig config;;
 
@@ -49,7 +49,7 @@ public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPos
      * The acceleration gain for the feedforward controller: Increasing it will help track acceleration more closely
      * @return
      */
-    public IPositionControlMotor CreateLinearSparkMaxPositionController(
+    public IMotorPositionControl CreateLinearSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
@@ -63,7 +63,7 @@ public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPos
         double kV,
         double kA
         ) {
-        return new PositionControlSparkMax(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0);
     }
 
     /**
@@ -95,7 +95,7 @@ public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPos
      * @param kG
      * The gravity gain for the feedforward controller: helps compensate for gravity when moving vertically, increasing it will help hold position against gravity better but too high may cause overshooting when moving downwards
      */
-    public IPositionControlMotor CreateLinearFFSparkMaxPositionController(
+    public IMotorPositionControl CreateLinearFFSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
@@ -110,7 +110,7 @@ public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPos
         double kA,
         double kG
     ) {
-        return new PositionControlSparkMax(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, kG, 0);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, kG, 0);
     }
 
     /**
@@ -142,7 +142,7 @@ public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPos
      * @param kCos
      * The cosine gain for gravity compensation based on position: helps reduce overshooting when moving downwards by reducing gravity compensation as you approach vertical, increasing it will help reduce overshooting but too high may cause instability near vertical positions
      */
-    public IPositionControlMotor CreatePivotFFSparkMaxPositionController(
+    public IMotorPositionControl CreatePivotFFSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
@@ -157,7 +157,7 @@ public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPos
         double kA,
         double kCos
     ) {
-        return new PositionControlSparkMax(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, kCos);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, kCos);
     }
 
     /**
@@ -180,7 +180,7 @@ public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPos
      * @param kCos
      * @return
      */
-    public IPositionControlMotor OverloadCreateSparkMaxPositionController(
+    public IMotorPositionControl OverloadCreateSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
@@ -198,7 +198,7 @@ public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPos
         double kG,
         double kCos
     ) {
-        return new PositionControlSparkMax(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA, kG, kCos);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA, kG, kCos);
     }
 
     /**
@@ -218,7 +218,7 @@ public class PositionControlSparkMax extends SparkMaxDiagnostics implements IPos
      * @param kG
      * @param kCos
      */
-    private PositionControlSparkMax(int deviceID,
+    private SparkMaxPositionControl(int deviceID,
         MotorType type,
         boolean isInverted,
         double positionConversionFactor,

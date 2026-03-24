@@ -5,14 +5,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.motors.IPositionControlMotor;
-import frc.robot.motors.IVelocityControlMotor;
+import frc.robot.motors.IMotorPositionControl;
+import frc.robot.motors.IMotorVelocityControl;
 import frc.robot.sensors.encoders.IEncoder;
 
 public class Module implements IModule {
 
-    private final IVelocityControlMotor driveMotor;
-    private final IPositionControlMotor turnMotor;
+    private final IMotorVelocityControl driveMotor;
+    private final IMotorPositionControl turnMotor;
     private final IEncoder turnEncoder;
     private final int index;
 
@@ -26,7 +26,7 @@ public class Module implements IModule {
     private SimpleMotorFeedforward ffModel =
         new SimpleMotorFeedforward(DriveConstants.driveKs, DriveConstants.driveKv); // TODO: replace
 
-    public Module(IVelocityControlMotor driveMotor, IPositionControlMotor turnMotor, IEncoder turnEncoder, int index) {
+    public Module(IMotorVelocityControl driveMotor, IMotorPositionControl turnMotor, IEncoder turnEncoder, int index) {
         this.driveMotor = driveMotor;
         this.turnMotor = turnMotor;
         this.turnEncoder = turnEncoder;

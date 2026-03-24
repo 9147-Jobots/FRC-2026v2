@@ -1,6 +1,6 @@
 package frc.robot.motors;
 
-public interface IPositionControlMotor extends IMotorDiagnostics {
+public interface IMotorPositionControl extends IMotorBase {
     
     /**
      * Runs the motor to the specified position setpoint.
