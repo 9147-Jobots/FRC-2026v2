@@ -13,7 +13,11 @@ public class CanCoder implements IEncoder {
 
     private final CANcoder canCoder;
 
-    public CanCoder(int id) {
+    public static CanCoder CreateCanCoder(int id) {
+        return new CanCoder(id);
+    }
+
+    private CanCoder(int id) {
         this.canCoder = new CANcoder(id);
         canCoder.getConfigurator().apply(new CANcoderConfiguration());
     }

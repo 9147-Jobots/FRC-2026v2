@@ -9,6 +9,9 @@ public class DriveConstants {
     public static final double driveKs = 0; // to be tunned static friction voltage in volts
     public static final double driveKv = 1.98; // to be tunned velocity constant in volts per (meter per second)
 
+    // Gyro constants
+    public static final int gyroID = 12;
+
     // Input constants
     public static final double X_IN = 1;
     public static final double Y_IN = 1;

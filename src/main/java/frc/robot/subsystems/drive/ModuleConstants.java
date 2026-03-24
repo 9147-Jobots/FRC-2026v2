@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -30,4 +32,24 @@ public class ModuleConstants {
 
     public static final Boolean TURN_BRAKE_MODE = true;
     public static final Boolean DRIVE_BRAKE_MODE = true;
+
+    /**
+     * These are used for feedforward constants, NOT FOR PID CONTROL. DO NOT USE THESE FOR PID CONTROL.
+     */
+    public static final SimpleMotorFeedforward DRIVE_FF = new SimpleMotorFeedforward(0.1, 0.13);
+
+    /**
+     * These are used for PID constants, NOT FOR FEEDFORWARD. DO NOT USE THESE FOR FEEDFORWARD.
+     */
+    public static final PIDController DRIVE_PID = new PIDController(0.05, 0.0, 0.0);
+
+    /**
+     * These are used for feedforward constants, NOT FOR PID CONTROL. DO NOT USE THESE FOR PID CONTROL.
+     */
+    public static final SimpleMotorFeedforward TURN_FF = new SimpleMotorFeedforward(0, 0);
+    
+    /**
+     * These are used for PID constants, NOT FOR FEEDFORWARD. DO NOT USE THESE FOR FEEDFORWARD.
+     */
+    public static final PIDController TURN_PID = new PIDController(7.0, 0.0, 0.0);
 }

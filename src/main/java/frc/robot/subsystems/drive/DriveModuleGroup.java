@@ -62,12 +62,24 @@ public class DriveModuleGroup {
      * Returns the current positions of all modules.
      * @return An array of SwerveModulePosition objects representing the current positions of all modules.
      */
-    public SwerveModulePosition[] getPositions() {
+    public SwerveModulePosition[] getModulePositions() {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for (int i = 0; i < 4; i++) {
             positions[i] = modules[i].getPosition();
         }
         return positions;
+    }
+
+    /**
+    * Returns the current states of all modules.
+    * @return An array of SwerveModuleState objects representing the current states of all modules.
+    */
+    public SwerveModuleState[] getModuleStates() {
+        SwerveModuleState[] states = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++) {
+            states[i] = modules[i].getState();
+        }
+        return states;
     }
 
     public void periodic() {
