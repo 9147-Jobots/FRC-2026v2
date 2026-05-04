@@ -24,6 +24,9 @@ public class Drive extends SubsystemBase {
     private final SwerveDriveKinematics kinematics;
     private final SwerveDrivePoseEstimator poseEstimator;
     
+    private double speedMultiplier;
+    private double turnMultiplier;
+    
     public Drive() {
         this.driveModuleGroup = new DriveModuleGroup(
             ModuleTalon.create(ModuleConstants.driveTalonID[0], ModuleConstants.turnTalonID[0], ModuleConstants.CANcoderID[0], 0),
@@ -103,6 +106,11 @@ public class Drive extends SubsystemBase {
 
      public void runVelocity(ChassisSpeeds speeds) {
         //ChassisSpeeds result = applyMaxAcceleration(speeds);
+
+        speeds.vxMetersPerSecond     *= speedMultiplier;
+        speeds.vyMetersPerSecond     *= speedMultiplier;
+        speeds.omegaRadiansPerSecond *= turnMultiplier;
+        
         driveModuleGroup.runVelocityRaw(speeds);
     }
 
@@ -128,5 +136,13 @@ public class Drive extends SubsystemBase {
         driveModuleGroup.periodic();
 
         updateOdometry();
+    }
+    
+    public void setSpeedMultiplier(double value) {
+        this.speedMultiplier = value;
+    }
+
+    public void setTurnMultiplier(double value) {
+        this.turnMultiplier = value;
     }
 }
