@@ -17,7 +17,7 @@ public class ModuleTalon {
         IMotorVelocityControl driveMotor = TalonFXVelocityControl.CreateTalonFXVelocityControl(
             driveMotorID, 
             ModuleConstants.isDriveMotorInverted[index],
-            1.0,
+            ModuleConstants.DRIVE_GEAR_RATIO,
             ModuleConstants.DRIVE_PID.getP(),
             ModuleConstants.DRIVE_FF.getKs(),
             ModuleConstants.DRIVE_FF.getKv()
@@ -25,7 +25,7 @@ public class ModuleTalon {
         IMotorPositionControl turnMotor = TalonFXPositionControl.CreateTalonFXPositionControl(
             turnMotorID,
             ModuleConstants.isTurnMotorInverted[index],
-            1.0,
+            ModuleConstants.TURN_GEAR_RATIO,
             ModuleConstants.TURN_PID.getP(),
             ModuleConstants.TURN_PID.getI(),
             ModuleConstants.TURN_PID.getD(),
