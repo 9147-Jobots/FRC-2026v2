@@ -46,6 +46,9 @@ public class Drive extends SubsystemBase {
         );
 
         buildAutoBuilder();
+
+        setSpeedMultiplier(1);
+        setTurnMultiplier(1);
     }
 
     private void buildAutoBuilder() {
@@ -110,7 +113,7 @@ public class Drive extends SubsystemBase {
         speeds.vxMetersPerSecond     *= speedMultiplier;
         speeds.vyMetersPerSecond     *= speedMultiplier;
         speeds.omegaRadiansPerSecond *= turnMultiplier;
-        
+
         driveModuleGroup.runVelocityRaw(speeds);
     }
 
