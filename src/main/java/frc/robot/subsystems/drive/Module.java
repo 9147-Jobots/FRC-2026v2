@@ -61,6 +61,8 @@ public class Module implements IModule {
         checkAndZeroTurnEncoder();
 
         if (angleSetpoint != null && isTurnEncoderZeroed) {
+            SmartDashboard.putNumber("Swerve module " + index + " angle set point radians", angleSetpoint.getRadians());
+            SmartDashboard.putNumber("Swerve module " + index + " angle current radians", getAngle().getRadians());
             turnMotor.runPosition(angleSetpoint.getRadians());
             driveMotor.runVelocity(speedSetpoint, ffModel.calculate(speedSetpoint)); // TODO: move ff into pid
         }
