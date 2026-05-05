@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -20,8 +21,10 @@ public class Module implements IModule {
 
     private Rotation2d angleSetpoint = new Rotation2d();
     private double speedSetpoint = 0.0;
+    
+    private final PIDController turnFeedback;
 
-    private boolean isTurnEncoderZeroed = false;
+    private Rotation2d turnRelativeOffset = null; // Relative + Offset = Absolute
 
     private SimpleMotorFeedforward ffModel =
         new SimpleMotorFeedforward(DriveConstants.driveKs, DriveConstants.driveKv); // TODO: replace
@@ -31,6 +34,10 @@ public class Module implements IModule {
         this.turnMotor = turnMotor;
         this.turnEncoder = turnEncoder;
         this.index = index;
+
+        turnFeedback = new PIDController(7.0, 0.0, 0.0);
+
+        turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     public void runSetpoint(SwerveModuleState state) {
@@ -39,7 +46,11 @@ public class Module implements IModule {
     }
 
     public Rotation2d getAngle() {
-        return new Rotation2d(turnEncoder.getPosition());
+        if (turnRelativeOffset == null) {
+            return new Rotation2d(turnMotor.getPosition() * 2 * Math.PI);
+        } else {
+            return (new Rotation2d(turnMotor.getPosition() * 2 * Math.PI)).plus(turnRelativeOffset);
+        }
     }
 
     public SwerveModuleState getState() {
@@ -60,21 +71,22 @@ public class Module implements IModule {
         // Wait until absolute angle is nonzero in case it wasn't initialized yet
         checkAndZeroTurnEncoder();
 
-        if (angleSetpoint != null && isTurnEncoderZeroed) {
+        if (angleSetpoint != null && turnRelativeOffset != null) {
             SmartDashboard.putNumber("Swerve module " + index + " angle set point radians", angleSetpoint.getRadians());
             SmartDashboard.putNumber("Swerve module " + index + " angle current radians", getAngle().getRadians());
-            turnMotor.runPosition(angleSetpoint.getRadians());
+            turnMotor.runVoltage(
+                turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians())
+            );
             driveMotor.runVelocity(speedSetpoint, ffModel.calculate(speedSetpoint)); // TODO: move ff into pid
         }
 
         // LOGGING ------------------------------------------------------------------------------
-        SmartDashboard.putBoolean("Swerve module " + index + " canCoderStatus:", isTurnEncoderZeroed);
+        SmartDashboard.putBoolean("Swerve module " + index + " canCoderStatus:", turnRelativeOffset != null);
     }
 
     private void checkAndZeroTurnEncoder() {
-        if (!isTurnEncoderZeroed && turnEncoder.getStatus().isOK()) {
-            turnMotor.zeroPosition(turnEncoder.getPosition());
-            isTurnEncoderZeroed = true;
+        if (turnRelativeOffset == null && turnEncoder.getStatus().isOK()) {
+            turnRelativeOffset = (new Rotation2d(turnEncoder.getPosition())).minus(getAngle());
         }
     }
 }

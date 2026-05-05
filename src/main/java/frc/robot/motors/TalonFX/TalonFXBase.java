@@ -21,9 +21,14 @@ public abstract class TalonFXBase implements IMotorBase {
     public double getTemperature() {
         return talonFX.getDeviceTemp().getValueAsDouble();
     }
-
+ 
     @Override
     public double getVoltage() {
         return talonFX.getMotorVoltage().getValueAsDouble();
     }
+
+    @Override
+    public void runVoltage(double voltage) {
+        talonFX.setVoltage(voltage);
+    } 
 }
