@@ -35,7 +35,7 @@ public class Module implements IModule {
         this.turnEncoder = turnEncoder;
         this.index = index;
 
-        turnFeedback = new PIDController(7.0, 0.0, 0.0);
+        turnFeedback = new PIDController(10.0, 0.0, 0.0);
 
         turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     }

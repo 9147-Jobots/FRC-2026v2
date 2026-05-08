@@ -47,7 +47,7 @@ public class DriveCommands {
                 MathUtil.applyDeadband(
                     Math.hypot(xSupplier.getAsDouble(), 
                     ySupplier.getAsDouble()
-                    ), DriveConstants.DEADBAND);
+                    ), DriveCommandConstants.DEADBAND);
             Rotation2d linearDirection =
                 new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
@@ -59,7 +59,7 @@ public class DriveCommands {
             // SmartDashboard.putNumber("TurnConstant", drive.getTurnSpeedMultiplier());
           
           double omega = MathUtil.applyDeadband(
-            -omegaSupplier.getAsDouble(), DriveConstants.DEADBAND);
+            -omegaSupplier.getAsDouble(), DriveCommandConstants.DEADBAND);
 
           // Calcaulate new linear velocity
           Translation2d linearVelocity =
