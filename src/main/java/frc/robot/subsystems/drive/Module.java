@@ -86,7 +86,7 @@ public class Module implements IModule {
 
     private void checkAndZeroTurnEncoder() {
         if (turnRelativeOffset == null && turnEncoder.getStatus().isOK()) {
-            turnRelativeOffset = (new Rotation2d(turnEncoder.getPosition())).minus(getAngle());
+            turnRelativeOffset = (new Rotation2d(turnEncoder.getPosition())).minus(getAngle()).minus(ModuleConstants.ABSOLUTE_ENCODER_OFFSETS[index]);
         }
     }
 }
