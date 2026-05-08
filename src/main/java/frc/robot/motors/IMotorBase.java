@@ -26,6 +26,12 @@ public interface IMotorBase {
      */
     public double getTemperature();
 
+
+    /**
+     * runs the motor at a voltage.
+     */
+    public void runVoltage(double voltage);
+
     /**
      * Returns the voltage supplied to the motor in volts.
      * @return the voltage supplied to the motor in volts
