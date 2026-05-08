@@ -7,9 +7,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 import frc.robot.commands.Drive.DriveCommands;
 import frc.robot.commands.Drive.DriveConstants;
+import frc.robot.commands.Drive.SetFastMode;
+import frc.robot.commands.Drive.SetSlowMode;
+import frc.robot.commands.Drive.SetDefaultCommand;
+
 import frc.robot.subsystems.drive.Drive;
+
 
 public class RobotContainer {
 
@@ -28,6 +34,9 @@ public class RobotContainer {
       () -> -controller.getLeftY() * DriveConstants.X_IN * DriveConstants.MAX_LINEAR_SPEED,
       () -> -controller.getLeftX() * DriveConstants.Y_IN * DriveConstants.MAX_LINEAR_SPEED,
       () -> controller.getRightX() * DriveConstants.OMEGA_IN * DriveConstants.MAX_ANGULAR_SPEED));
+
+    controller.leftBumper().onTrue(new SetSlowMode(drive)).onFalse(new SetDefaultCommand(drive));
+    controller.rightBumper().onTrue(new SetFastMode(drive)).onFalse(new SetDefaultCommand(drive));
   }
 
   public Command getAutonomousCommand() {
