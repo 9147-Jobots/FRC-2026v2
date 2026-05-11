@@ -70,7 +70,7 @@ public class Drive extends SubsystemBase {
                     DCMotor.getKrakenX60(4), 
                     DriveConstants.MAX_ANGULAR_SPEED, 
                     DriveConstants.DRIVE_BASE_RADIUS,
-                    8), 
+                    1), 
                     DriveModuleGroup.getModuleTranslations()
                 );
         }

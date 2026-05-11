@@ -18,9 +18,6 @@ public class Module implements IModule {
     private final int index;
 
     private SwerveModuleState state = new SwerveModuleState();
-
-    private Rotation2d angleSetpoint = new Rotation2d();
-    private double speedSetpoint = 0.0;
     
     private final PIDController turnFeedback;
 
@@ -50,7 +47,7 @@ public class Module implements IModule {
     }
 
     public SwerveModuleState getState() {
-        return new SwerveModuleState(speedSetpoint, angleSetpoint);
+        return this.state;
     }
 
     public SwerveModulePosition getPosition() {
@@ -59,9 +56,9 @@ public class Module implements IModule {
 
     @Override
     public void periodic() {
-        if (index != 2) {
-            return;
-        }
+        // if (index != 2) {
+        //     return;
+        // }
         // Optimize velocity setpoint
         state.optimize(getAngle());
         state.cosineScale(getAngle());
@@ -70,18 +67,17 @@ public class Module implements IModule {
         // Wait until absolute angle is nonzero in case it wasn't initialized yet
         checkAndZeroTurnEncoder();
 
-        if (angleSetpoint != null && turnRelativeOffset != null) {
-            SmartDashboard.putNumber("Swerve module " + index + " angle set point radians", angleSetpoint.getRadians());
+        if (turnRelativeOffset != null) {
             SmartDashboard.putNumber("Swerve module " + index + " angle current radians", getAngle().getRadians());
             turnMotor.runVoltage(
                 turnFeedback.calculate(getAngle().getRadians(), state.angle.getRadians())
             );
-            turnMotor.runPosition(state.angle.getRadians());
+            
+            //turnMotor.runPosition(state.angle.getRadians());
 
             double velocityRadPerSec = state.speedMetersPerSecond / ModuleConstants.WHEEL_RADIUS;
             driveMotor.runVelocity(velocityRadPerSec);
 
-            SmartDashboard.putNumber("Swerve module " + index + " speed setpoint", speedSetpoint);
             SmartDashboard.putNumber("Swerve module " + index + " current speed", driveMotor.getVelocity());
         }
 
