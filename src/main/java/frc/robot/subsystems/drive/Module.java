@@ -26,23 +26,19 @@ public class Module implements IModule {
 
     private Rotation2d turnRelativeOffset = null; // Relative + Offset = Absolute
 
-    private SimpleMotorFeedforward ffModel =
-        new SimpleMotorFeedforward(DriveConstants.driveKs, DriveConstants.driveKv); // TODO: replace
-
     public Module(IMotorVelocityControl driveMotor, IMotorPositionControl turnMotor, IEncoder turnEncoder, int index) {
         this.driveMotor = driveMotor;
         this.turnMotor = turnMotor;
         this.turnEncoder = turnEncoder;
         this.index = index;
 
-        turnFeedback = new PIDController(10.0, 0.0, 0.0);
+        turnFeedback = new PIDController(7.0, 0.0, 0.0);
 
         turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     public void runSetpoint(SwerveModuleState state) {
-        angleSetpoint = state.angle;
-        speedSetpoint = state.speedMetersPerSecond;
+        this.state = state;
     }
 
     public Rotation2d getAngle() {
@@ -63,6 +59,9 @@ public class Module implements IModule {
 
     @Override
     public void periodic() {
+        if (index != 2) {
+            return;
+        }
         // Optimize velocity setpoint
         state.optimize(getAngle());
         state.cosineScale(getAngle());
@@ -75,9 +74,15 @@ public class Module implements IModule {
             SmartDashboard.putNumber("Swerve module " + index + " angle set point radians", angleSetpoint.getRadians());
             SmartDashboard.putNumber("Swerve module " + index + " angle current radians", getAngle().getRadians());
             turnMotor.runVoltage(
-                turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians())
+                turnFeedback.calculate(getAngle().getRadians(), state.angle.getRadians())
             );
-            driveMotor.runVelocity(speedSetpoint, ffModel.calculate(speedSetpoint)); // TODO: move ff into pid
+            turnMotor.runPosition(state.angle.getRadians());
+
+            double velocityRadPerSec = state.speedMetersPerSecond / ModuleConstants.WHEEL_RADIUS;
+            driveMotor.runVelocity(velocityRadPerSec);
+
+            SmartDashboard.putNumber("Swerve module " + index + " speed setpoint", speedSetpoint);
+            SmartDashboard.putNumber("Swerve module " + index + " current speed", driveMotor.getVelocity());
         }
 
         // LOGGING ------------------------------------------------------------------------------

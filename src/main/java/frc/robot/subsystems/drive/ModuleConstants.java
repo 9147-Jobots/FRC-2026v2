@@ -51,5 +51,5 @@ public class ModuleConstants {
     /**
      * These are used for PID constants, NOT FOR FEEDFORWARD. DO NOT USE THESE FOR FEEDFORWARD.
      */
-    public static final PIDController TURN_PID = new PIDController(7.0, 0.0, 0.0);
+    public static final PIDController TURN_PID = new PIDController(0.1, 0.0, 0.0);
 }

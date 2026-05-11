@@ -36,8 +36,8 @@ public class RobotContainer {
       () -> -controller.getLeftX() * DriveCommandConstants.Y_IN * DriveConstants.MAX_LINEAR_SPEED,
       () -> controller.getRightX() * DriveCommandConstants.OMEGA_IN * DriveConstants.MAX_ANGULAR_SPEED));
 
-    controller.leftBumper().onTrue(new SetSlowMode(drive)).onFalse(new SetDefaultCommand(drive));
-    controller.rightBumper().onTrue(new SetFastMode(drive)).onFalse(new SetDefaultCommand(drive));
+    // controller.leftBumper().onTrue(new SetSlowMode(drive)).onFalse(new SetDefaultCommand(drive));
+    // controller.rightBumper().onTrue(new SetFastMode(drive)).onFalse(new SetDefaultCommand(drive));
   }
 
   public Command getAutonomousCommand() {
