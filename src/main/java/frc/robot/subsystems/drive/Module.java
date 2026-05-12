@@ -41,7 +41,7 @@ public class Module implements IModule {
         if (turnRelativeOffset == null) {
             return new Rotation2d(0);
         } else {
-            return (new Rotation2d(turnMotor.getPosition() * 2 * Math.PI)).plus(turnRelativeOffset);
+            return (new Rotation2d((turnMotor.getPosition() % 1) * 2 * Math.PI)).plus(turnRelativeOffset);
         }
     }
 
