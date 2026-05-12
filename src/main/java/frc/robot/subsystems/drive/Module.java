@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -40,7 +39,7 @@ public class Module implements IModule {
 
     public Rotation2d getAngle() {
         if (turnRelativeOffset == null) {
-            return new Rotation2d();
+            return new Rotation2d(0);
         } else {
             return (new Rotation2d(turnMotor.getPosition() * 2 * Math.PI)).plus(turnRelativeOffset);
         }
@@ -51,15 +50,11 @@ public class Module implements IModule {
     }
 
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(driveMotor.getPosition() * 2 * Math.PI * ModuleConstants.WHEEL_RADIUS, new Rotation2d(turnEncoder.getPosition() * 2 * Math.PI));
+        return new SwerveModulePosition(driveMotor.getPosition() * 2 * Math.PI * ModuleConstants.WHEEL_RADIUS, new Rotation2d(turnEncoder.getPosition()));
     }
 
     @Override
     public void periodic() {
-        // if (index != 2) {
-        //     return;
-        // }
-        // Optimize velocity setpoint
         state.optimize(getAngle());
         state.cosineScale(getAngle());
 
@@ -72,8 +67,6 @@ public class Module implements IModule {
             turnMotor.runVoltage(
                 turnFeedback.calculate(getAngle().getRadians(), state.angle.getRadians())
             );
-            
-            //turnMotor.runPosition(state.angle.getRadians());
 
             double velocityRadPerSec = state.speedMetersPerSecond / ModuleConstants.WHEEL_RADIUS;
             driveMotor.runVelocity(velocityRadPerSec);
@@ -87,7 +80,7 @@ public class Module implements IModule {
 
     private void checkAndZeroTurnEncoder() {
         if (turnRelativeOffset == null && turnEncoder.getStatus().isOK()) {
-            turnRelativeOffset = (new Rotation2d(turnEncoder.getPosition())).minus(getAngle()).minus(ModuleConstants.ABSOLUTE_ENCODER_OFFSETS[index]);
+            turnRelativeOffset = (new Rotation2d(turnEncoder.getPosition())).minus(new Rotation2d(turnMotor.getPosition() * 2 * Math.PI)).minus(ModuleConstants.ABSOLUTE_ENCODER_OFFSETS[index]);
         }
     }
 }
