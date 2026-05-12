@@ -40,7 +40,7 @@ public class Module implements IModule {
 
     public Rotation2d getAngle() {
         if (turnRelativeOffset == null) {
-            return new Rotation2d(turnMotor.getPosition() * 2 * Math.PI);
+            return new Rotation2d();
         } else {
             return (new Rotation2d(turnMotor.getPosition() * 2 * Math.PI)).plus(turnRelativeOffset);
         }
@@ -51,7 +51,7 @@ public class Module implements IModule {
     }
 
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(driveMotor.getPosition() * ModuleConstants.WHEEL_RADIUS, new Rotation2d(turnEncoder.getPosition()));
+        return new SwerveModulePosition(driveMotor.getPosition() * 2 * Math.PI * ModuleConstants.WHEEL_RADIUS, new Rotation2d(turnEncoder.getPosition() * 2 * Math.PI));
     }
 
     @Override
