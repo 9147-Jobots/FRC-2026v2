@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.vision;
 
-import frc.robot.subsystems.drive.Drive;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +55,7 @@ public class Vision extends SubsystemBase {
 
   private AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField); //creating a new apriltag field layout
   
-  public Vision(EstimateConsumer kEstimateConsumer, Drive drive) {
+  public Vision(EstimateConsumer kEstimateConsumer) {
     estimateConsumer = kEstimateConsumer;
 
     //creating a new photon camera

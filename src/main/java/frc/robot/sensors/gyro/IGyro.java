@@ -1,11 +1,12 @@
 package frc.robot.sensors.gyro;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public interface IGyro {
+public abstract class IGyro extends SubsystemBase {
     /**
-     * Returns the current angle of the gyro in degrees.
-     * @return The current angle of the gyro in degrees.
+     * Returns the current angle of the gyro in radians.
+     * @return The current angle of the gyro in radians.
      */
-    public Rotation2d getYaw();
+    public abstract Rotation2d getYaw();
 }
