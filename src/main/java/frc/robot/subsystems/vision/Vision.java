@@ -45,11 +45,11 @@ public class Vision extends SubsystemBase {
 
         Transform3d robotToLeft = new Transform3d(
             new Translation3d(VisionConstants.CameraLeft.X, VisionConstants.CameraLeft.Y, VisionConstants.CameraLeft.Z),
-            new Rotation3d(VisionConstants.CameraLeft.PITCH, VisionConstants.CameraLeft.ROLL, VisionConstants.CameraLeft.YAW)
+            new Rotation3d(VisionConstants.CameraLeft.ROLL, VisionConstants.CameraLeft.PITCH, VisionConstants.CameraLeft.YAW)
         );
         Transform3d robotToRight = new Transform3d(
             new Translation3d(VisionConstants.CameraRight.X, VisionConstants.CameraRight.Y, VisionConstants.CameraRight.Z),
-            new Rotation3d(VisionConstants.CameraRight.PITCH, VisionConstants.CameraRight.ROLL, VisionConstants.CameraRight.YAW)
+            new Rotation3d(VisionConstants.CameraRight.ROLL, VisionConstants.CameraRight.PITCH, VisionConstants.CameraRight.YAW)
         );
 
         leftEstimator  = new PhotonPoseEstimator(fieldLayout, robotToLeft);
@@ -64,21 +64,22 @@ public class Vision extends SubsystemBase {
 
     private void processCamera(PhotonCamera camera, PhotonPoseEstimator estimator, String name) {
         for (var result : camera.getAllUnreadResults()) {
-            Optional<EstimatedRobotPose> est;
+            // try multi-tag first, fall back to single-tag if unavailable or failed
+            Optional<EstimatedRobotPose> est = result.getMultiTagResult().isPresent()
+                ? estimator.estimateCoprocMultiTagPose(result)
+                : Optional.empty();
 
-            if (result.getMultiTagResult().isPresent()) {
-                est = estimator.estimateCoprocMultiTagPose(result);
-            } else {
+            if (est.isEmpty()) {
                 est = estimator.estimateLowestAmbiguityPose(result);
             }
 
             est.ifPresent(pose -> {
-                Matrix<N3, N1> stdDevs = getStdDevs(pose, result.getTargets());
+                Matrix<N3, N1> stdDevs = getStdDevs(pose, pose.targetsUsed);
                 estimateConsumer.accept(pose.estimatedPose.toPose2d(), pose.timestampSeconds, stdDevs);
 
                 SmartDashboard.putNumber("Vision/" + name + "/X", pose.estimatedPose.getX());
                 SmartDashboard.putNumber("Vision/" + name + "/Y", pose.estimatedPose.getY());
-                SmartDashboard.putNumber("Vision/" + name + "/Rotation", pose.estimatedPose.getRotation().getAngle());
+                SmartDashboard.putNumber("Vision/" + name + "/Heading", pose.estimatedPose.getRotation().toRotation2d().getDegrees());
             });
         }
     }
