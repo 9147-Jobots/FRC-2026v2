@@ -50,12 +50,12 @@ public class DriveCommand {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     return drivetrain.applyRequest(() -> {
-      double speedMult = slowMode.getAsBoolean() ? DriveModesConstants.slowSpeedMutliplier
-          : fastMode.getAsBoolean() ? DriveModesConstants.fastSpeedMutliplier
-          : DriveModesConstants.defaultSpeedMutliplier;
-      double turnMult = slowMode.getAsBoolean() ? DriveModesConstants.slowTurnMutliplier
-          : fastMode.getAsBoolean() ? DriveModesConstants.fastTurnMutliplier
-          : DriveModesConstants.defaultTurnMutliplier;
+      double speedMult = slowMode.getAsBoolean() ? DriveModesConstants.SLOW_SPEED_MULTIPLIER
+          : fastMode.getAsBoolean() ? DriveModesConstants.FAST_SPEED_MULTIPLIER
+          : DriveModesConstants.DEFAULT_SPEED_MULTIPLIER;
+      double turnMult = slowMode.getAsBoolean() ? DriveModesConstants.SLOW_TURN_MULTIPLIER
+          : fastMode.getAsBoolean() ? DriveModesConstants.FAST_TURN_MULTIPLIER
+          : DriveModesConstants.DEFAULT_TURN_MULTIPLIER;
       return drive
           .withVelocityX(-xSupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.X_IN * speedMult)
           .withVelocityY(-ySupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.Y_IN * speedMult)

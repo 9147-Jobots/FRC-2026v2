@@ -1,12 +1,12 @@
 package frc.robot.services;
 
 public class DriveModesConstants {
-    public static double defaultSpeedMutliplier = 1;
-    public static double defaultTurnMutliplier  = 1;
+    public static final double DEFAULT_SPEED_MULTIPLIER = 1.0;
+    public static final double DEFAULT_TURN_MULTIPLIER  = 1.0;
 
-    public static double slowSpeedMutliplier    = 0.5;
-    public static double slowTurnMutliplier     = 1;
+    public static final double SLOW_SPEED_MULTIPLIER    = 0.5;
+    public static final double SLOW_TURN_MULTIPLIER     = 1.0;
 
-    public static double fastSpeedMutliplier    = 1.1;
-    public static double fastTurnMutliplier     = 1;
+    public static final double FAST_SPEED_MULTIPLIER    = 1.1;
+    public static final double FAST_TURN_MULTIPLIER     = 1.0;
 }
