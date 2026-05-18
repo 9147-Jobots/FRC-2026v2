@@ -6,12 +6,19 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
@@ -34,8 +41,41 @@ public class RobotContainer {
         (pose, timestamp, stdDevs) -> drivetrain.addVisionMeasurement(pose, timestamp, stdDevs)
     );
 
+    private final SendableChooser<Command> autoChooser;
+
     public RobotContainer() {
+        autoChooser = configureAutoBuilder();
         configureBindings();
+    }
+
+    private SendableChooser<Command> configureAutoBuilder() {
+        try {
+            RobotConfig config = RobotConfig.fromGUISettings();
+            AutoBuilder.configure(
+                () -> drivetrain.getState().Pose,
+                drivetrain::resetPose,
+                () -> drivetrain.getState().Speeds,
+                (speeds, feedforwards) -> drivetrain.setControl(
+                    new SwerveRequest.ApplyRobotSpeeds()
+                        .withSpeeds(speeds)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                ),
+                new PPHolonomicDriveController(
+                    new PIDConstants(10, 0, 0), // translation PID — tune these
+                    new PIDConstants(7, 0, 0)   // rotation PID — tune these
+                ),
+                config,
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                drivetrain
+            );
+        } catch (Exception e) {
+            DriverStation.reportError("PathPlanner config failed: " + e.getMessage(), e.getStackTrace());
+        }
+
+        SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", chooser);
+        return chooser;
     }
 
     private void configureBindings() {
@@ -64,15 +104,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        final var autonDrive = new SwerveRequest.FieldCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-        final var idle = new SwerveRequest.Idle();
-        return Commands.sequence(
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-            drivetrain.applyRequest(() ->
-                autonDrive.withVelocityX(0.5).withVelocityY(0).withRotationalRate(0)
-            ).withTimeout(5.0),
-            drivetrain.applyRequest(() -> idle)
-        );
+        return autoChooser.getSelected();
     }
 }
