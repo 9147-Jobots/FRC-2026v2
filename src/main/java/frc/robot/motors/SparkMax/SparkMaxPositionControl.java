@@ -49,7 +49,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
      * The acceleration gain for the feedforward controller: Increasing it will help track acceleration more closely
      * @return
      */
-    public IMotorPositionControl CreateLinearSparkMaxPositionController(
+    public static IMotorPositionControl CreateLinearSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
@@ -95,7 +95,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
      * @param kG
      * The gravity gain for the feedforward controller: helps compensate for gravity when moving vertically, increasing it will help hold position against gravity better but too high may cause overshooting when moving downwards
      */
-    public IMotorPositionControl CreateLinearFFSparkMaxPositionController(
+    public static IMotorPositionControl CreateLinearFFSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
@@ -142,7 +142,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
      * @param kCos
      * The cosine gain for gravity compensation based on position: helps reduce overshooting when moving downwards by reducing gravity compensation as you approach vertical, increasing it will help reduce overshooting but too high may cause instability near vertical positions
      */
-    public IMotorPositionControl CreatePivotFFSparkMaxPositionController(
+    public static IMotorPositionControl CreatePivotFFSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
@@ -180,7 +180,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
      * @param kCos
      * @return
      */
-    public IMotorPositionControl OverloadCreateSparkMaxPositionController(
+    public static IMotorPositionControl OverloadCreateSparkMaxPositionController(
         int deviceID,
         MotorType type,
         boolean isInverted,
