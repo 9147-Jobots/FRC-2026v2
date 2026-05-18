@@ -26,8 +26,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import frc.robot.services.DriveModesConstants;
-
 public class DriveCommand {
   private DriveCommand() {}
 
@@ -50,12 +48,12 @@ public class DriveCommand {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     return drivetrain.applyRequest(() -> {
-      double speedMult = slowMode.getAsBoolean() ? DriveModesConstants.SLOW_SPEED_MULTIPLIER
-          : fastMode.getAsBoolean() ? DriveModesConstants.FAST_SPEED_MULTIPLIER
-          : DriveModesConstants.DEFAULT_SPEED_MULTIPLIER;
-      double turnMult = slowMode.getAsBoolean() ? DriveModesConstants.SLOW_TURN_MULTIPLIER
-          : fastMode.getAsBoolean() ? DriveModesConstants.FAST_TURN_MULTIPLIER
-          : DriveModesConstants.DEFAULT_TURN_MULTIPLIER;
+      double speedMult = slowMode.getAsBoolean() ? DriveCommandConstants.SLOW_SPEED_MULTIPLIER
+          : fastMode.getAsBoolean() ? DriveCommandConstants.FAST_SPEED_MULTIPLIER
+          : DriveCommandConstants.DEFAULT_SPEED_MULTIPLIER;
+      double turnMult = slowMode.getAsBoolean() ? DriveCommandConstants.SLOW_TURN_MULTIPLIER
+          : fastMode.getAsBoolean() ? DriveCommandConstants.FAST_TURN_MULTIPLIER
+          : DriveCommandConstants.DEFAULT_TURN_MULTIPLIER;
       return drive
           .withVelocityX(-xSupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.X_IN * speedMult)
           .withVelocityY(-ySupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.Y_IN * speedMult)

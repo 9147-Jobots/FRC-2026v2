@@ -40,7 +40,7 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
      * @param kA the acceleration gain for the feedforward controller
      * @return
      */
-    public IMotorVelocityControl CreateSparkMaxVelocityontroller(
+    public IMotorVelocityControl CreateSparkMaxVelocityController(
         int deviceID,
         MotorType type,
         boolean isInverted,
