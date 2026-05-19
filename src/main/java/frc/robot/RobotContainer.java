@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
@@ -29,7 +30,9 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.Telemetry;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.services.ShooterService;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
@@ -46,6 +49,7 @@ public class RobotContainer {
 
     // subsystems
     private final IndexerSubsystem indexer;
+    private final ShooterSubsystem shooter;
 
     private final SendableChooser<Command> autoChooser;
 
@@ -53,6 +57,7 @@ public class RobotContainer {
         autoChooser = configureAutoBuilder();
 
         indexer = new IndexerSubsystem();
+        shooter = new ShooterSubsystem();
 
         configureBindings();
     }
@@ -112,6 +117,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         controller.y().onTrue(new RunIndexer(indexer)).onFalse(new StopIndexer(indexer));
+        controller.x().onTrue(Commands.runOnce(() -> ShooterService.runShooterKicker(shooter))).onFalse(Commands.runOnce(() -> ShooterService.stopShooterKicker(shooter)));
     }
 
     public Command getAutonomousCommand() {

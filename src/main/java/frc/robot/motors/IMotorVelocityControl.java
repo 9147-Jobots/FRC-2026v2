@@ -4,7 +4,7 @@ public interface IMotorVelocityControl extends IMotorBase {
     
     /**
      * Runs the motor at the specified velocity setpoint.
-     * @param setpoint the velocity setpoint to run the motor at
+     * @param setpoint the velocity setpoint to run the motor at 
      */
     public void runVelocity(double setpoint);
 

@@ -21,7 +21,7 @@ public class IndexerSubsystem extends SubsystemBase {
             0.1,
             0,
             0,
-            1,
+            0.1,
             0);
     }
 
