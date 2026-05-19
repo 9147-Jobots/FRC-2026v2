@@ -2,25 +2,14 @@ package frc.robot.subsystems.indexer;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motors.IMotorVelocityControl;
 import frc.robot.motors.SparkMax.SparkMaxVelocityControl;
 
-public class IndexerSubsystem {
-    // int deviceID,
-    // MotorType type,
-    // boolean isInverted,
-    // double positionConversionFactor,
-    // double velocityConversionFactor,
-    // double kCruiseVelocity,
-    // double kMaxAcceleration,
-    // double kAllowedProfileError,
-    // double kP,
-    // double kS,
-    // double kV,
-    // double kA
+public class IndexerSubsystem extends SubsystemBase {
     IMotorVelocityControl motor;
 
-    public IndexerSubsystem(SparkMaxVelocityControl indexer) {
+    public IndexerSubsystem() {
         motor = SparkMaxVelocityControl.CreateSparkMaxVelocityController(
             16,
             MotorType.kBrushless,

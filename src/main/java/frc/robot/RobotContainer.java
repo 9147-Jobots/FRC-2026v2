@@ -23,9 +23,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 import frc.robot.commands.Drive.DriveCommand;
+import frc.robot.commands.Indexer.RunIndexer;
+import frc.robot.commands.Indexer.StopIndexer;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.Telemetry;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
 
 public class RobotContainer {
@@ -41,10 +44,16 @@ public class RobotContainer {
         (pose, timestamp, stdDevs) -> drivetrain.addVisionMeasurement(pose, timestamp, stdDevs)
     );
 
+    // subsystems
+    private final IndexerSubsystem indexer;
+
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         autoChooser = configureAutoBuilder();
+
+        indexer = new IndexerSubsystem();
+
         configureBindings();
     }
 
@@ -101,6 +110,8 @@ public class RobotContainer {
         );
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        controller.y().onTrue(new RunIndexer(indexer)).onFalse(new StopIndexer(indexer));
     }
 
     public Command getAutonomousCommand() {
