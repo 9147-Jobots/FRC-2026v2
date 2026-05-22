@@ -191,4 +191,11 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
     public void stop() {
         pid.setSetpoint(0, ControlType.kMAXMotionVelocityControl);
     }
+
+    @Override
+    public void updateGains(double kP, double kS, double kV, double kA) {
+        SparkMaxConfig update = new SparkMaxConfig();
+        update.closedLoop.p(kP).feedForward.kS(kS).kV(kV).kA(kA);
+        sparkMax.configure(update, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
 }

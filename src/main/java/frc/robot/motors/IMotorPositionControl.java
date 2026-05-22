@@ -37,4 +37,15 @@ public interface IMotorPositionControl extends IMotorBase {
      * Stops the motor.
      */
     public void stop();
+
+    /**
+     * Updates the PID and feedforward gains at runtime without redeploying code.
+     * @param kP proportional gain
+     * @param kS static feedforward gain (overcomes friction)
+     * @param kV velocity feedforward gain
+     * @param kA acceleration feedforward gain
+     * @param kG gravity feedforward gain (for vertical linear mechanisms)
+     * @param kCos cosine gravity feedforward gain (for pivoting arms)
+     */
+    public void updateGains(double kP, double kS, double kV, double kA, double kG, double kCos);
 }

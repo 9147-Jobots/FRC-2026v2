@@ -149,5 +149,14 @@ public class TalonFXVelocityControl extends TalonFXBase implements IMotorVelocit
     public void stop() {
         talonFX.setControl(new VelocityVoltage(0));
     }
-    
+
+    @Override
+    public void updateGains(double kP, double kS, double kV, double kA) {
+        configs.Slot0.kP = kP;
+        configs.Slot0.kS = kS;
+        configs.Slot0.kV = kV;
+        configs.Slot0.kA = kA;
+        talonFX.getConfigurator().apply(configs.Slot0);
+    }
+
 }

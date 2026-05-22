@@ -39,4 +39,13 @@ public interface IMotorVelocityControl extends IMotorBase {
      * Stops the motor.
      */
     public void stop();
+
+    /**
+     * Updates the PID and feedforward gains at runtime without redeploying code.
+     * @param kP proportional gain
+     * @param kS static feedforward gain (overcomes friction)
+     * @param kV velocity feedforward gain
+     * @param kA acceleration feedforward gain
+     */
+    public void updateGains(double kP, double kS, double kV, double kA);
 }

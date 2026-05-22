@@ -193,5 +193,16 @@ public class TalonFXPositionControl extends TalonFXBase implements IMotorPositio
     @Override
     public void stop() {
         talonFX.setControl(new VelocityVoltage(0));
-    }    
+    }
+
+    @Override
+    public void updateGains(double kP, double kS, double kV, double kA, double kG, double kCos) {
+        configs.Slot0.kP = kP;
+        configs.Slot0.kS = kS;
+        configs.Slot0.kV = kV;
+        configs.Slot0.kA = kA;
+        // kG and kCos share the same Slot0.kG field — apply the one matching the gravity type set at construction
+        configs.Slot0.kG = (configs.Slot0.GravityType == GravityTypeValue.Elevator_Static) ? kG : kCos;
+        talonFX.getConfigurator().apply(configs.Slot0);
+    }
 }

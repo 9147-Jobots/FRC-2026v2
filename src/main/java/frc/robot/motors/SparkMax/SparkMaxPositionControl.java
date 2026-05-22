@@ -305,5 +305,12 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
     public void stop() {
         // do noting for now
         // controller.stopMotor();
-    }    
+    }
+
+    @Override
+    public void updateGains(double kP, double kS, double kV, double kA, double kG, double kCos) {
+        SparkMaxConfig update = new SparkMaxConfig();
+        update.closedLoop.p(kP).feedForward.kS(kS).kV(kV).kA(kA).kG(kG).kCos(kCos);
+        sparkMax.configure(update, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
 }
