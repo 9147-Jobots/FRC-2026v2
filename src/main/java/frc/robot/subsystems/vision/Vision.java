@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,11 +27,9 @@ public class Vision extends SubsystemBase {
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs  = VecBuilder.fill(0.5, 0.5, 1);
 
-    private final PhotonCamera cameraLeft;
-    private final PhotonCamera cameraRight;
+    private record CameraEntry(PhotonCamera camera, PhotonPoseEstimator estimator, String name) {}
 
-    private final PhotonPoseEstimator leftEstimator;
-    private final PhotonPoseEstimator rightEstimator;
+    private final List<CameraEntry> cameras = new ArrayList<>();
 
     private final AprilTagFieldLayout fieldLayout;
     private final EstimateConsumer estimateConsumer;
@@ -40,46 +39,50 @@ public class Vision extends SubsystemBase {
 
         fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-        cameraLeft  = new PhotonCamera("Left");
-        cameraRight = new PhotonCamera("Right");
+        cameras.add(new CameraEntry(
+            new PhotonCamera("Left"),
+            new PhotonPoseEstimator(fieldLayout, new Transform3d(
+                new Translation3d(VisionConstants.CameraLeft.X, VisionConstants.CameraLeft.Y, VisionConstants.CameraLeft.Z),
+                new Rotation3d(VisionConstants.CameraLeft.ROLL, VisionConstants.CameraLeft.PITCH, VisionConstants.CameraLeft.YAW)
+            )),
+            "Left"
+        ));
 
-        Transform3d robotToLeft = new Transform3d(
-            new Translation3d(VisionConstants.CameraLeft.X, VisionConstants.CameraLeft.Y, VisionConstants.CameraLeft.Z),
-            new Rotation3d(VisionConstants.CameraLeft.ROLL, VisionConstants.CameraLeft.PITCH, VisionConstants.CameraLeft.YAW)
-        );
-        Transform3d robotToRight = new Transform3d(
-            new Translation3d(VisionConstants.CameraRight.X, VisionConstants.CameraRight.Y, VisionConstants.CameraRight.Z),
-            new Rotation3d(VisionConstants.CameraRight.ROLL, VisionConstants.CameraRight.PITCH, VisionConstants.CameraRight.YAW)
-        );
-
-        leftEstimator  = new PhotonPoseEstimator(fieldLayout, robotToLeft);
-        rightEstimator = new PhotonPoseEstimator(fieldLayout, robotToRight);
+        cameras.add(new CameraEntry(
+            new PhotonCamera("Right"),
+            new PhotonPoseEstimator(fieldLayout, new Transform3d(
+                new Translation3d(VisionConstants.CameraRight.X, VisionConstants.CameraRight.Y, VisionConstants.CameraRight.Z),
+                new Rotation3d(VisionConstants.CameraRight.ROLL, VisionConstants.CameraRight.PITCH, VisionConstants.CameraRight.YAW)
+            )),
+            "Right"
+        ));
     }
 
     @Override
     public void periodic() {
-        processCamera(cameraLeft,  leftEstimator,  "Left");
-        processCamera(cameraRight, rightEstimator, "Right");
+        for (var cam : cameras) {
+            processCamera(cam);
+        }
     }
 
-    private void processCamera(PhotonCamera camera, PhotonPoseEstimator estimator, String name) {
-        for (var result : camera.getAllUnreadResults()) {
+    private void processCamera(CameraEntry cam) {
+        for (var result : cam.camera().getAllUnreadResults()) {
             // try multi-tag first, fall back to single-tag if unavailable or failed
             Optional<EstimatedRobotPose> est = result.getMultiTagResult().isPresent()
-                ? estimator.estimateCoprocMultiTagPose(result)
+                ? cam.estimator().estimateCoprocMultiTagPose(result)
                 : Optional.empty();
 
             if (est.isEmpty()) {
-                est = estimator.estimateLowestAmbiguityPose(result);
+                est = cam.estimator().estimateLowestAmbiguityPose(result);
             }
 
             est.ifPresent(pose -> {
                 Matrix<N3, N1> stdDevs = getStdDevs(pose, pose.targetsUsed);
                 estimateConsumer.accept(pose.estimatedPose.toPose2d(), pose.timestampSeconds, stdDevs);
 
-                SmartDashboard.putNumber("Vision/" + name + "/X", pose.estimatedPose.getX());
-                SmartDashboard.putNumber("Vision/" + name + "/Y", pose.estimatedPose.getY());
-                SmartDashboard.putNumber("Vision/" + name + "/Heading", pose.estimatedPose.getRotation().toRotation2d().getDegrees());
+                SmartDashboard.putNumber("Vision/" + cam.name() + "/X",       pose.estimatedPose.getX());
+                SmartDashboard.putNumber("Vision/" + cam.name() + "/Y",       pose.estimatedPose.getY());
+                SmartDashboard.putNumber("Vision/" + cam.name() + "/Heading", pose.estimatedPose.getRotation().toRotation2d().getDegrees());
             });
         }
     }
