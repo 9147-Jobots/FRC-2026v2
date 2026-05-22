@@ -37,9 +37,9 @@ public class ShooterSubsystem extends SubsystemBase {
             1000,
             1000,
             0.1,
-            5,
-            0,
-            0,
+            0.001,
+            0.05,
+            0.00206,
             0);
 
         turret  = SparkMaxPositionControl.CreateLinearSparkMaxPositionController(
