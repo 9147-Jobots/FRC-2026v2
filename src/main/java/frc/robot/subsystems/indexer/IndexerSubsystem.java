@@ -19,9 +19,9 @@ public class IndexerSubsystem extends SubsystemBase {
             400,
             1000,
             0.1,
+            0.0004,
             0,
-            0,
-            0.1,
+            0.00206,
             0);
     }
 
