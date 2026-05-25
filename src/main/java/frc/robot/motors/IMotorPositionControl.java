@@ -7,7 +7,7 @@ public interface IMotorPositionControl extends IMotorBase {
      * @param setpoint the position setpoint to run the motor to
      */
     public void runPosition(double setpoint);
-
+    
     /**
      * Returns the current setpoint of the motor. This is not necessarily the same as the current position of the motor, as the motor may not be at the setpoint yet.
      * @return the current setpoint of the motor
