@@ -61,11 +61,24 @@ public class ShooterSubsystem extends SubsystemBase {
         shooter.runVelocity(value);
     }
 
+    public double getShooterVelocity() {
+        return shooter.getVelocity();
+    }
+
     public void runKickerVelocity(double value) {
         kicker.runVelocity(value);
     }
+
+    public double getKickerVelocity() {
+        return kicker.getVelocity();
+    }
+
     public void runTurretPosition(double value) {
         turret.runPosition(value);
+    }
+
+    public double getTurretVelocity() {
+        return turret.getVelocity();
     }
 
 }

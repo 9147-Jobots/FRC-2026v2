@@ -24,12 +24,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 import frc.robot.commands.Drive.DriveCommand;
-import frc.robot.commands.Indexer.RunIndexer;
-import frc.robot.commands.Indexer.StopIndexer;
+import frc.robot.commands.Intake.IntakeFuel;
+import frc.robot.commands.Intake.IntakeRest;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.Telemetry;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.services.ShooterService;
@@ -50,6 +51,7 @@ public class RobotContainer {
     // subsystems
     private final IndexerSubsystem indexer;
     private final ShooterSubsystem shooter;
+    private final IntakeSubsystem intake;
 
     private final SendableChooser<Command> autoChooser;
 
@@ -58,6 +60,7 @@ public class RobotContainer {
 
         indexer = new IndexerSubsystem();
         shooter = new ShooterSubsystem();
+        intake = new IntakeSubsystem();
 
         configureBindings();
     }
@@ -95,17 +98,21 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        // right bumper = slow mode, right trigger (held) = fast mode
+        // left bumper = slow mode, right bumper = fast mode
         drivetrain.setDefaultCommand(
             DriveCommand.joystickDrive(
                 drivetrain,
                 () -> controller.getLeftY(),
                 () -> controller.getLeftX(),
                 () -> controller.getRightX(),
-                controller.rightBumper(),
-                controller.rightTrigger()
+                controller.leftBumper(),
+                controller.rightBumper()
             )
         );
+
+        // Intake Bindings
+        controller.rightTrigger().whileTrue(new IntakeFuel(intake));
+        controller.y().onTrue(new IntakeRest(intake));
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -116,7 +123,6 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        controller.y().onTrue(new RunIndexer(indexer)).onFalse(new StopIndexer(indexer));
         controller.x().onTrue(Commands.runOnce(() -> ShooterService.runShooterKicker(shooter))).onFalse(Commands.runOnce(() -> ShooterService.stopShooterKicker(shooter)));
     }
 
