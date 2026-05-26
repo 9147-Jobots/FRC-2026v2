@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Intake.IntakeFuel;
 import frc.robot.commands.Intake.IntakeRest;
+import frc.robot.commands.Intake.IntakeUp;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.Telemetry;
@@ -113,6 +114,9 @@ public class RobotContainer {
         // Intake Bindings
         controller.rightTrigger().whileTrue(new IntakeFuel(intake));
         controller.y().onTrue(new IntakeRest(intake));
+        controller.x().onTrue(new IntakeUp(intake));
+
+        
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
