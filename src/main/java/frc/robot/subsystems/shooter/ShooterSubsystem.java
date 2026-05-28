@@ -77,8 +77,8 @@ public class ShooterSubsystem extends SubsystemBase {
         turret.runPosition(value);
     }
 
-    public double getTurretVelocity() {
-        return turret.getVelocity();
+    public double getTurretPosition() {
+        return turret.getPosition();
     }
 
 }

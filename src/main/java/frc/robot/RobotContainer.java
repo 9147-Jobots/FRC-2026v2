@@ -27,6 +27,7 @@ import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Intake.IntakeFuel;
 import frc.robot.commands.Intake.IntakeRest;
 import frc.robot.commands.Intake.IntakeUp;
+import frc.robot.commands.Shooter.ShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.Telemetry;
@@ -116,8 +117,6 @@ public class RobotContainer {
         controller.y().onTrue(new IntakeRest(intake));
         controller.x().onTrue(new IntakeUp(intake));
 
-        
-
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -128,6 +127,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         controller.x().onTrue(Commands.runOnce(() -> ShooterService.runShooterKicker(shooter))).onFalse(Commands.runOnce(() -> ShooterService.stopShooterKicker(shooter)));
+        controller.rightTrigger().whileTrue(new ShootFuel(drivetrain, indexer, shooter));
     }
 
     public Command getAutonomousCommand() {
