@@ -153,7 +153,7 @@ public class ShooterService {
         return 0;
     } 
 
-    private static void aimTurret(ShooterSubsystem shooter, CommandSwerveDrivetrain drive) {
+    public static void aimTurret(ShooterSubsystem shooter, CommandSwerveDrivetrain drive) {
         try {
             double angle = getAngle(drive);
             shooter.runTurretPosition(angle);

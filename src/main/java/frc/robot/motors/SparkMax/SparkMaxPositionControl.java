@@ -17,7 +17,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
 
     private final SparkMaxConfig config;;
 
-    public final RelativeEncoder encoder;
+    private final RelativeEncoder encoder;
 
     private final SparkClosedLoopController pid;
 

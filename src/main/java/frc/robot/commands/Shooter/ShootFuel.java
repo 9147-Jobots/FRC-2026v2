@@ -21,7 +21,7 @@ public class ShootFuel extends Command {
     m_drive = drive;
     m_indexer = indexer;
     m_shooter = shooter;
-    addRequirements(drive, indexer, shooter);
+    addRequirements(indexer, shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -31,6 +31,7 @@ public class ShootFuel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    ShooterService.AlignTurretPeriodic(m_shooter, m_drive);
     ShooterService.shootFuel(m_shooter, m_indexer, m_drive);
   }
 

@@ -15,15 +15,15 @@ public class IndexerSubsystem extends SubsystemBase {
         motor = SparkMaxVelocityControl.CreateSparkMaxVelocityController(
             16,
             MotorType.kBrushless,
-            true,
+            false,
             1,
             1,
             400,
             1000,
             0.1,
-            0.0004,
             0,
-            0.00206,
+            0.4,
+            0.0022,
             0);
 
         tuner = new VelocityGainsTuner("Indexer/Motor", motor, 0.0004, 0, 0.00206, 0);

@@ -7,10 +7,15 @@ import frc.robot.motors.IMotorPositionControl;
 import frc.robot.motors.IMotorVelocityControl;
 import frc.robot.motors.SparkMax.SparkMaxPositionControl;
 import frc.robot.motors.SparkMax.SparkMaxVelocityControl;
+import frc.robot.motors.tuning.PositionGainsTuner;
+import frc.robot.motors.tuning.VelocityGainsTuner;
 
 public class IntakeSubsystem extends SubsystemBase {
     IMotorVelocityControl spin;
     IMotorPositionControl pivot;
+    VelocityGainsTuner spin_tuner;
+    PositionGainsTuner pivot_tuner;
+
 
     public IntakeSubsystem() {
         spin = SparkMaxVelocityControl.CreateSparkMaxVelocityController(
@@ -20,25 +25,31 @@ public class IntakeSubsystem extends SubsystemBase {
             1,
             1,
             450,
-            1000,
+            3000,
             0.1,
             0,
             0,
             0,
             0);
-        pivot = SparkMaxPositionControl.CreateLinearSparkMaxPositionController(
+        pivot = SparkMaxPositionControl.CreatePivotFFSparkMaxPositionController(
             13,
             MotorType.kBrushless,
-            true,
-            16,
-            16,
-            450,
-            1000,
-            0.1,
+            false,
+            16*9/11,
+            1,
+            5000,
+            3000,
+            1,
+            0.14,
             0,
             0,
             0,
-            0);
+            0.42);
+
+        pivot.zeroPosition(132);
+
+        spin_tuner = new VelocityGainsTuner("Intake/Spin", spin, 0.0, 0.18, 0.002025, 0);
+        pivot_tuner = new PositionGainsTuner("Intake/Pivot", pivot, 0.14, 0, 0.0, 0, 0, 0.42);
     }
 
     public void runSpinVelocity(double value) {
@@ -47,5 +58,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void runPivotPosition(double value) {
         pivot.runPosition(value);
+    }
+
+    public double getPivotPosition() {
+        return pivot.getPosition();
+    }
+
+    @Override
+    public void periodic() {
+        pivot_tuner.update();
+        spin_tuner.update();
     }
 }

@@ -27,6 +27,7 @@ import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Intake.IntakeFuel;
 import frc.robot.commands.Intake.IntakeRest;
 import frc.robot.commands.Intake.IntakeUp;
+import frc.robot.commands.Intake.StopIntakeSpin;
 import frc.robot.commands.Shooter.ShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -113,7 +114,7 @@ public class RobotContainer {
         );
 
         // Intake Bindings
-        controller.rightTrigger().whileTrue(new IntakeFuel(intake));
+        controller.rightTrigger().whileTrue(new IntakeFuel(intake)).onFalse(new StopIntakeSpin(intake));
         controller.y().onTrue(new IntakeRest(intake));
         controller.x().onTrue(new IntakeUp(intake));
 
@@ -127,7 +128,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         controller.x().onTrue(Commands.runOnce(() -> ShooterService.runShooterKicker(shooter))).onFalse(Commands.runOnce(() -> ShooterService.stopShooterKicker(shooter)));
-        controller.rightTrigger().whileTrue(new ShootFuel(drivetrain, indexer, shooter));
+        controller.leftTrigger().whileTrue(new ShootFuel(drivetrain, indexer, shooter));
     }
 
     public Command getAutonomousCommand() {

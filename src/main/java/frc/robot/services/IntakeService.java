@@ -12,14 +12,23 @@ public class IntakeService {
     }
 
     public static void IntakePivotGround(IntakeSubsystem intake) {
-        intake.runPivotPosition(5); // TO BE TUNED
+        intake.runPivotPosition(IntakeServiceConstants.INTAKE_PIVOT_GROUND);
     }
 
     public static void IntakePivotUp(IntakeSubsystem intake) {
-        intake.runPivotPosition(5); // TO BE TUNED
+        intake.runPivotPosition(IntakeServiceConstants.INTAKE_PIVOT_UP);
     }
 
     public static void IntakePivotRest(IntakeSubsystem intake) {
-        intake.runPivotPosition(5); // TO BE TUNED
+        intake.runPivotPosition(IntakeServiceConstants.INTAKE_PIVOT_REST);
+    }
+
+    public static boolean runIntakeSpinIfPivotDown(IntakeSubsystem intake) {
+        if (intake.getPivotPosition() > (IntakeServiceConstants.INTAKE_PIVOT_GROUND - IntakeServiceConstants.DEADZONE)) {
+            runIntakeSpin(intake);
+            return true;
+        }
+
+        return false;
     }
 }

@@ -7,6 +7,7 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.services.IntakeService;
+import frc.robot.services.IntakeServiceConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeFuel extends Command {
@@ -23,22 +24,24 @@ public class IntakeFuel extends Command {
   @Override
   public void initialize() {
     IntakeService.IntakePivotGround(m_intakeSubsystem);
-    IntakeService.runIntakeSpin(m_intakeSubsystem);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    IntakeService.runIntakeSpinIfPivotDown(m_intakeSubsystem);
+  }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    IntakeService.stopIntakeSpin(m_intakeSubsystem);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (m_intakeSubsystem.getPivotPosition() > (IntakeServiceConstants.INTAKE_PIVOT_GROUND - IntakeServiceConstants.DEADZONE)) {
+      return true;
+    } 
     return false;
   }
 }
