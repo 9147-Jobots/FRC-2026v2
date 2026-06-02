@@ -7,11 +7,14 @@ import frc.robot.motors.IMotorPositionControl;
 import frc.robot.motors.IMotorVelocityControl;
 import frc.robot.motors.SparkMax.SparkMaxPositionControl;
 import frc.robot.motors.SparkMax.SparkMaxVelocityControl;
+import frc.robot.motors.tuning.VelocityGainsTuner;
 
 public class ShooterSubsystem extends SubsystemBase {
     IMotorVelocityControl shooter;
     IMotorVelocityControl kicker;
     IMotorPositionControl turret;
+
+    VelocityGainsTuner kicker_tuner;
 
     public ShooterSubsystem() {
         shooter = SparkMaxVelocityControl.CreateSparkMaxVelocityController(
@@ -35,12 +38,14 @@ public class ShooterSubsystem extends SubsystemBase {
             9,
             1,
             1000,
-            1000,
+            3000,
             0.1,
-            0.001,
-            0.05,
-            0.00206,
+            0,
+            0.15,
+            0.00208,
             0);
+
+        kicker_tuner = new VelocityGainsTuner("Shooter/Kicker", kicker, 0, 0.15, 0.00208, 0);
 
         turret  = SparkMaxPositionControl.CreateLinearSparkMaxPositionController(
             9,
@@ -79,6 +84,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double getTurretPosition() {
         return turret.getPosition();
+    }
+
+    @Override
+    public void periodic() {
+        kicker_tuner.update();
     }
 
 }
