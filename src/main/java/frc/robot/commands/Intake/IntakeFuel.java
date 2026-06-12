@@ -39,7 +39,7 @@ public class IntakeFuel extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_intakeSubsystem.getPivotPosition() > (IntakeServiceConstants.INTAKE_PIVOT_GROUND - IntakeServiceConstants.DEADZONE)) {
+    if (m_intakeSubsystem.getPivotPosition() < (IntakeServiceConstants.INTAKE_PIVOT_GROUND + IntakeServiceConstants.DEADZONE)) {
       return true;
     } 
     return false;

@@ -55,15 +55,15 @@ public class ShooterSubsystem extends SubsystemBase {
             true,
             9,
             1,
-            1000,
-            3000,
+            600,
+            100,
             0.1,
             0.1,
             0,
             0,
             0);
             
-        turret_tuner = new PositionGainsTuner("Shooter/Turret", turret, 0.1, 0, 0, 0, 0, 0);  
+        turret_tuner = new PositionGainsTuner("Shooter/Turret", turret, 0.1, 0, 0, 0, 0, 0);
     }
 
     public void runShooterVelocity(double value) {
