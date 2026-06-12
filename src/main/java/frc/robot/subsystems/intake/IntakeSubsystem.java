@@ -28,8 +28,8 @@ public class IntakeSubsystem extends SubsystemBase {
             3000,
             0.1,
             0,
-            0,
-            0,
+            0.18,
+            0.002025,
             0);
         pivot = SparkMaxPositionControl.CreatePivotFFSparkMaxPositionController(
             13,
