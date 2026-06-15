@@ -133,7 +133,7 @@ public class ShooterService {
         try {
             Pose2d turrentPose = getTurretPose(drive);
             Pose2d targetPose = getTargetPosition();
-            Pose2d relativePose = targetPose.relativeTo(new Pose2d(turrentPose.getTranslation(), new Rotation2d()));
+            Pose2d relativePose = targetPose.relativeTo(turrentPose);
             return relativePose.getTranslation().getNorm();
         } catch (Exception e) {
             // TODO: handle exception
@@ -145,7 +145,7 @@ public class ShooterService {
         try {
             Pose2d turrentPose = getTurretPose(drive);
             Pose2d targetPose = getTargetPosition();
-            Pose2d relativePose = targetPose.relativeTo(new Pose2d(turrentPose.getTranslation(), new Rotation2d()));
+            Pose2d relativePose = targetPose.relativeTo(turrentPose);
             return Math.atan2(relativePose.getY(), relativePose.getX())*180/Math.PI;
         } catch (Exception e) {
             // TODO: handle exception
