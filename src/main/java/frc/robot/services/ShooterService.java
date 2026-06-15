@@ -162,21 +162,18 @@ public class ShooterService {
         }
     }
 
-    public static void aimTurretArea(ShooterSubsystem shooter) {
+    public static void aimTurretArea(ShooterSubsystem shooter, CommandSwerveDrivetrain drive) {
         try {
-            double angle = getAngleToArea();
+            double angle = getAngleToArea(drive);
             shooter.runTurretPosition(angle);
         } catch (Exception e) {
             return;
         }
     }
 
-    private static double getAngleToArea() {
-        if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)) {
-            return 0;
-        } else {
-            return 180;
-        }
+    private static double getAngleToArea(CommandSwerveDrivetrain drive) {
+        double fieldAngle = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red) ? 0 : 180;
+        return fieldAngle - drive.getRotation3d().toRotation2d().getDegrees();
     }
 
     public static void shootFuelArea(ShooterSubsystem shooter, IndexerSubsystem indexer) {
@@ -224,7 +221,7 @@ public class ShooterService {
 
     public static double getAlignmentAngle(CommandSwerveDrivetrain drive) {
         if (isInMiddle(drive)) {
-            return getAngleToArea();
+            return getAngleToArea(drive);
         }
         return getAngle(drive);
     }
