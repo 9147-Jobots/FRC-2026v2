@@ -100,6 +100,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void runTurretPosition(double degrees) {
+        while (degrees < -340) {
+            degrees += 360;}
+            
+        while (degrees > 50) {
+            degrees -= 360;}
+
         turret.runPosition(degrees);
     }
 
