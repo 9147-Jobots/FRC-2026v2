@@ -1,12 +1,27 @@
 package frc.robot.motors;
 
 public interface IMotorPositionControl extends IMotorBase {
-    
+
+    public enum PositionControlMode {
+        kTrapezoidal,
+        kDirectPID
+    }
+
     /**
-     * Runs the motor to the specified position setpoint.
+     * Runs the motor to the specified position setpoint using a trapezoidal motion profile.
+     * Equivalent to calling runPosition(setpoint, PositionControlMode.kTrapezoidal).
      * @param setpoint the position setpoint to run the motor to
      */
     public void runPosition(double setpoint);
+
+    /**
+     * Runs the motor to the specified position setpoint using the given control mode.
+     * Use kDirectPID when streaming continuously updated setpoints (e.g. turret tracking).
+     * Use kTrapezoidal for point-to-point moves.
+     * @param setpoint the position setpoint
+     * @param mode the control mode to use
+     */
+    public void runPosition(double setpoint, PositionControlMode mode);
     
     /**
      * Returns the current setpoint of the motor. This is not necessarily the same as the current position of the motor, as the motor may not be at the setpoint yet.

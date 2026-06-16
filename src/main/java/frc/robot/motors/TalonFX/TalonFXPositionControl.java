@@ -1,6 +1,7 @@
 package frc.robot.motors.TalonFX;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -167,7 +168,16 @@ public class TalonFXPositionControl extends TalonFXBase implements IMotorPositio
 
     @Override
     public void runPosition(double setpoint) {
-        talonFX.setControl(new PositionVoltage(setpoint));
+        talonFX.setControl(new MotionMagicVoltage(setpoint));
+    }
+
+    @Override
+    public void runPosition(double setpoint, PositionControlMode mode) {
+        if (mode == PositionControlMode.kTrapezoidal) {
+            talonFX.setControl(new MotionMagicVoltage(setpoint));
+        } else {
+            talonFX.setControl(new PositionVoltage(setpoint));
+        }
     }
 
     @Override

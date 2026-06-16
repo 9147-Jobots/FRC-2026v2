@@ -278,7 +278,14 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
     @Override
     public void runPosition(double setpoint) {
         pid.setSetpoint(setpoint, ControlType.kMAXMotionPositionControl);
-        
+    }
+
+    @Override
+    public void runPosition(double setpoint, PositionControlMode mode) {
+        ControlType type = mode == PositionControlMode.kTrapezoidal
+            ? ControlType.kMAXMotionPositionControl
+            : ControlType.kPosition;
+        pid.setSetpoint(setpoint, type);
     }
 
     @Override

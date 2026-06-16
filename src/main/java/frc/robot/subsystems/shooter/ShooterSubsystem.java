@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motors.IMotorPositionControl;
+import frc.robot.motors.IMotorPositionControl.PositionControlMode;
 import frc.robot.motors.IMotorVelocityControl;
 import frc.robot.motors.SparkMax.SparkMaxPositionControl;
 import frc.robot.motors.SparkMax.SparkMaxVelocityControl;
@@ -106,7 +107,7 @@ public class ShooterSubsystem extends SubsystemBase {
         while (degrees > 50) {
             degrees -= 360;}
 
-        turret.runPosition(degrees);
+        turret.runPosition(degrees, PositionControlMode.kDirectPID);
     }
 
     public double getTurretPosition() {
