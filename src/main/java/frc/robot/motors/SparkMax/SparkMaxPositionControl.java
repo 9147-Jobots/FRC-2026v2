@@ -2,7 +2,6 @@ package frc.robot.motors.SparkMax;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 import frc.robot.motors.IMotorPositionControl;
 
@@ -63,7 +62,26 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kV,
         double kA
         ) {
-        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0, -1, 1);
+    }
+
+    public static IMotorPositionControl CreateLinearSparkMaxPositionController(
+        int deviceID,
+        MotorType type,
+        boolean isInverted,
+        double positionConversionFactor,
+        double velocityConversionFactor,
+        double kCruiseVelocity,
+        double kMaxAcceleration,
+        double kAllowedProfileError,
+        double KP,
+        double kS,
+        double kV,
+        double kA,
+        double minOutput,
+        double maxOutput
+        ) {
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0, minOutput, maxOutput);
     }
 
     /**
@@ -110,7 +128,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kA,
         double kG
     ) {
-        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, kG, 0);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, kG, 0, -1, 1);
     }
 
     /**
@@ -157,7 +175,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kA,
         double kCos
     ) {
-        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, kCos);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, kCos, -1, 1);
     }
 
     /**
@@ -198,7 +216,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kG,
         double kCos
     ) {
-        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA, kG, kCos);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA, kG, kCos, -1, 1);
     }
 
     /**
@@ -233,7 +251,9 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kV,
         double kA,
         double kG,
-        double kCos
+        double kCos,
+        double minOutput,
+        double maxOutput
         ) {
     // Construct the wrapped SparkMax in the superclass and reuse it here.
     super(new SparkMax(deviceID, type));
@@ -248,7 +268,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
             .p(kP)
             .i(kI)
             .d(kD)
-            .outputRange(-0.2, 0.2)
+            .outputRange(minOutput, maxOutput)
             .feedForward
                 .kS(kS)
                 .kV(kV)

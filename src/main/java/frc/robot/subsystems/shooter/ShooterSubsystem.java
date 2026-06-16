@@ -78,7 +78,9 @@ public class ShooterSubsystem extends SubsystemBase {
             TURRET_KP,
             0,
             TURRET_KV,
-            0);
+            0,
+            -0.2,
+            0.2);
             
         turret_tuner = new PositionGainsTuner("Shooter/Turret", turret, TURRET_KP, 0, TURRET_KV, 0, 0, 0);
         turret.zeroPosition(TURRET_OFFSET);
