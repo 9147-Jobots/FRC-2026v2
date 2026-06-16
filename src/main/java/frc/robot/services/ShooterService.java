@@ -90,8 +90,8 @@ public class ShooterService {
 
     public static double getTargetRpm(double distance) {
         if (distance < ShooterServiceConstants.distanceAngle[0][0]) {
-            SmartDashboard.putBoolean("Interpolation Found", false);
-            return -1;
+            SmartDashboard.putBoolean("Interpolation Found", true);
+            return ShooterServiceConstants.distanceAngle[0][1];
         }
         for (int i = 0; i < ShooterServiceConstants.distanceAngle.length; i++) {
             if (distance < ShooterServiceConstants.distanceAngle[i][0]) {
@@ -118,13 +118,12 @@ public class ShooterService {
             robotPose = new Pose2d();
         }
 
-        Pose2d robotRelativeTurretPose = new Pose2d(ShooterServiceConstants.Turrent_x, ShooterServiceConstants.Turrent_y, new Rotation2d());
-        Pose2d rotatedTurretPose = robotRelativeTurretPose.rotateAround(new Translation2d(), drive.getRotation3d().toRotation2d());
-        SmartDashboard.putNumber("turretrel robot x", rotatedTurretPose.getX());
-        SmartDashboard.putNumber("turretrel robot y", rotatedTurretPose.getY());
+        SmartDashboard.putNumber("turretrel robot x", ShooterServiceConstants.Turrent_x);
+        SmartDashboard.putNumber("turretrel robot y", ShooterServiceConstants.Turrent_y);
+        // transformBy rotates the robot-local offset by robotPose.rotation into field frame
         Transform2d movement = new Transform2d(
-        rotatedTurretPose.getTranslation(),
-        new Rotation2d()
+            new Translation2d(ShooterServiceConstants.Turrent_x, ShooterServiceConstants.Turrent_y),
+            new Rotation2d()
         );
         return robotPose.transformBy(movement);
     }
