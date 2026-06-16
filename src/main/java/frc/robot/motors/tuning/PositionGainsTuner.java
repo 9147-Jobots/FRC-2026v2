@@ -2,6 +2,7 @@ package frc.robot.motors.tuning;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.motors.IMotorPositionControl;
+import frc.robot.motors.IMotorPositionControl.PositionControlMode;
 
 public class PositionGainsTuner {
 
@@ -55,7 +56,7 @@ public class PositionGainsTuner {
         boolean isTuning = SmartDashboard.getBoolean(prefix + "/isTuning", false);
         if (isTuning) {
             testSetpoint = SmartDashboard.getNumber(prefix + "/testSetpoint", testSetpoint);
-            motor.runPosition(testSetpoint);
+            motor.runPosition(testSetpoint, PositionControlMode.kDirectPID);
             SmartDashboard.putNumber(prefix + "/position", motor.getPosition());
             SmartDashboard.putNumber(prefix + "/currentSetpoint", motor.getSetpoint());
         }

@@ -242,14 +242,13 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
             .maxMotion
                 .allowedProfileError(kAllowedProfileError)
                 .maxAcceleration(kMaxAcceleration)
-                .cruiseVelocity(kCruiseVelocity)
-                .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
-        
+                .cruiseVelocity(kCruiseVelocity);
         config.
         closedLoop
             .p(kP)
             .i(kI)
             .d(kD)
+            .outputRange(-0.2, 0.2)
             .feedForward
                 .kS(kS)
                 .kV(kV)
