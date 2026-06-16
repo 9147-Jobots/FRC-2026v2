@@ -113,10 +113,15 @@ public class Telemetry {
         fieldPub.set(m_poseArray);
 
         /* Telemeterize each module state to a Mechanism2d */
+        String[] moduleNames = {"FrontLeft", "FrontRight", "BackLeft", "BackRight"};
         for (int i = 0; i < 4; ++i) {
             m_moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
             m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
             m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
+
+            SmartDashboard.putNumber("Swerve/" + moduleNames[i] + "/SteerAngle_rot", state.ModuleStates[i].angle.getRotations());
+            SmartDashboard.putNumber("Swerve/" + moduleNames[i] + "/DrivePosition_m", state.ModulePositions[i].distanceMeters);
+            SmartDashboard.putNumber("Swerve/" + moduleNames[i] + "/DriveSpeed_mps", state.ModuleStates[i].speedMetersPerSecond);
         }
     }
 }
