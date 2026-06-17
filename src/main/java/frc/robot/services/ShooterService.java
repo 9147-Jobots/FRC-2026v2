@@ -227,8 +227,14 @@ public class ShooterService {
 
     public static void AlignTurretPeriodic(ShooterSubsystem shooter, CommandSwerveDrivetrain drive) {
         double angle = getAlignmentAngle(drive);
-        SmartDashboard.putNumber("turret target angle", angle);
-        SmartDashboard.putNumber("turret actual angle", shooter.getTurretPosition());
+        double robotFieldAngle = drive.getRotation3d().toRotation2d().getDegrees();
+        double turretRobotAngle = shooter.getTurretPosition();
+        double turretFieldAngle = robotFieldAngle + turretRobotAngle;
+
+        SmartDashboard.putNumber("turret target angle (robot-rel)", angle);
+        SmartDashboard.putNumber("turret actual angle (robot-rel)", turretRobotAngle);
+        SmartDashboard.putNumber("robot angle (field-rel)", robotFieldAngle);
+        SmartDashboard.putNumber("turret angle (field-rel)", turretFieldAngle);
         shooter.runTurretPosition(angle);
     }
 }
