@@ -33,6 +33,12 @@ public interface IMotorBase {
     public void runVoltage(double voltage);
 
     /**
+     * Runs the motor at a duty cycle output.
+     * @param output duty cycle from -1.0 (full reverse) to 1.0 (full forward)
+     */
+    public void runDutyCycle(double output);
+
+    /**
      * Returns the voltage supplied to the motor in volts.
      * @return the voltage supplied to the motor in volts
      */

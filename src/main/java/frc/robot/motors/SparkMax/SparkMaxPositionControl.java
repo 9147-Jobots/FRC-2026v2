@@ -63,9 +63,83 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kV,
         double kA
         ) {
-        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0, -1, 1);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0, -1, 1, IdleMode.kBrake);
     }
 
+    /**
+     * Creates a new PositionControlMotorSparkMax with constants P, S, V and A.
+     * @param deviceID
+     * The CAN ID of the Spark Max motor controller: This should be a unique ID assigned to the motor controller on the CAN bus, typically set using a hardware configuration tool or through code
+     * @param isInverted
+     * Whether the motor output should be inverted: Setting this to true will reverse the direction of the motor, which can be useful for certain mechanisms or to correct for wiring issues
+     * @param positionConversionFactor
+     * The factor to convert the motor's native units to the desired position units: Increasing it will make the controller more sensitive to position changes, but too high may cause instability
+     * @param velocityConversionFactor
+     * The factor to convert the motor's native units to the desired velocity units: Increasing it will make the controller more sensitive to velocity changes, but too high may cause instability
+     * @param kCruiseVelocity
+     * The cruise velocity for motion profiling: Increasing it will allow the controller to reach higher speeds, but too high may cause overshooting
+     * @param kMaxAcceleration
+     * The maximum acceleration for motion profiling: Increasing it will allow the controller to accelerate faster, but too high may cause instability
+     * @param kAllowedProfileError
+     * The allowed error for the motion profile: Increasing it will make the controller more tolerant to error, but too high may cause overshooting
+     * @param KP
+     * The proportional gain for the PID controller: Increasing it will increase the responsiveness of the controller, but too high may cause oscillation
+     * @param kS
+     * The static gain for the feedforward controller: helps overcome a constant resistance like friction in a gearbox
+     * @param kV
+     * The velocity gain for the feedforward controller: Increasing it will increase the voltage output proportionally to the velocity target
+     * @param kA
+     * The acceleration gain for the feedforward controller: Increasing it will help track acceleration more closely
+     * @param idleMode
+     * The idle mode of the motor: kBrake will resist motion when not powered, kCoast will allow free movement
+     * @return
+     */
+    public static IMotorPositionControl CreateLinearSparkMaxPositionController(
+        int deviceID,
+        MotorType type,
+        boolean isInverted,
+        double positionConversionFactor,
+        double velocityConversionFactor,
+        double kCruiseVelocity,
+        double kMaxAcceleration,
+        double kAllowedProfileError,
+        double KP,
+        double kS,
+        double kV,
+        double kA,
+        IdleMode idleMode
+        ) {
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0, -1, 1, idleMode);
+    }
+
+    /**
+     * Creates a new PositionControlMotorSparkMax with constants P, S, V and A.
+     * @param deviceID
+     * The CAN ID of the Spark Max motor controller: This should be a unique ID assigned to the motor controller on the CAN bus, typically set using a hardware configuration tool or through code
+     * @param isInverted
+     * Whether the motor output should be inverted: Setting this to true will reverse the direction of the motor, which can be useful for certain mechanisms or to correct for wiring issues
+     * @param positionConversionFactor
+     * The factor to convert the motor's native units to the desired position units: Increasing it will make the controller more sensitive to position changes, but too high may cause instability
+     * @param velocityConversionFactor
+     * The factor to convert the motor's native units to the desired velocity units: Increasing it will make the controller more sensitive to velocity changes, but too high may cause instability
+     * @param kCruiseVelocity
+     * The cruise velocity for motion profiling: Increasing it will allow the controller to reach higher speeds, but too high may cause overshooting
+     * @param kMaxAcceleration
+     * The maximum acceleration for motion profiling: Increasing it will allow the controller to accelerate faster, but too high may cause instability
+     * @param kAllowedProfileError
+     * The allowed error for the motion profile: Increasing it will make the controller more tolerant to error, but too high may cause overshooting
+     * @param KP
+     * The proportional gain for the PID controller: Increasing it will increase the responsiveness of the controller, but too high may cause oscillation
+     * @param kS
+     * The static gain for the feedforward controller: helps overcome a constant resistance like friction in a gearbox
+     * @param kV
+     * The velocity gain for the feedforward controller: Increasing it will increase the voltage output proportionally to the velocity target
+     * @param kA
+     * The acceleration gain for the feedforward controller: Increasing it will help track acceleration more closely
+     * @param minOutput
+     * @param maxOutput
+     * @return
+     */
     public static IMotorPositionControl CreateLinearSparkMaxPositionController(
         int deviceID,
         MotorType type,
@@ -82,7 +156,57 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double minOutput,
         double maxOutput
         ) {
-        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0, minOutput, maxOutput);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0, minOutput, maxOutput, IdleMode.kBrake);
+    }
+
+    /**
+     * Creates a new PositionControlMotorSparkMax with constants P, S, V and A.
+     * @param deviceID
+     * The CAN ID of the Spark Max motor controller: This should be a unique ID assigned to the motor controller on the CAN bus, typically set using a hardware configuration tool or through code
+     * @param isInverted
+     * Whether the motor output should be inverted: Setting this to true will reverse the direction of the motor, which can be useful for certain mechanisms or to correct for wiring issues
+     * @param positionConversionFactor
+     * The factor to convert the motor's native units to the desired position units: Increasing it will make the controller more sensitive to position changes, but too high may cause instability
+     * @param velocityConversionFactor
+     * The factor to convert the motor's native units to the desired velocity units: Increasing it will make the controller more sensitive to velocity changes, but too high may cause instability
+     * @param kCruiseVelocity
+     * The cruise velocity for motion profiling: Increasing it will allow the controller to reach higher speeds, but too high may cause overshooting
+     * @param kMaxAcceleration
+     * The maximum acceleration for motion profiling: Increasing it will allow the controller to accelerate faster, but too high may cause instability
+     * @param kAllowedProfileError
+     * The allowed error for the motion profile: Increasing it will make the controller more tolerant to error, but too high may cause overshooting
+     * @param KP
+     * The proportional gain for the PID controller: Increasing it will increase the responsiveness of the controller, but too high may cause oscillation
+     * @param kS
+     * The static gain for the feedforward controller: helps overcome a constant resistance like friction in a gearbox
+     * @param kV
+     * The velocity gain for the feedforward controller: Increasing it will increase the voltage output proportionally to the velocity target
+     * @param kA
+     * The acceleration gain for the feedforward controller: Increasing it will help track acceleration more closely
+     * @param minOutput
+     * @param maxOutput
+     * @param idleMode
+     * The idle mode of the motor: kBrake will resist motion when not powered, kCoast will allow free movement
+     * @return
+     */
+    public static IMotorPositionControl CreateLinearSparkMaxPositionController(
+        int deviceID,
+        MotorType type,
+        boolean isInverted,
+        double positionConversionFactor,
+        double velocityConversionFactor,
+        double kCruiseVelocity,
+        double kMaxAcceleration,
+        double kAllowedProfileError,
+        double KP,
+        double kS,
+        double kV,
+        double kA,
+        double minOutput,
+        double maxOutput,
+        IdleMode idleMode
+        ) {
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, 0, minOutput, maxOutput, idleMode);
     }
 
     /**
@@ -129,7 +253,57 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kA,
         double kG
     ) {
-        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, kG, 0, -1, 1);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, kG, 0, -1, 1, IdleMode.kBrake);
+    }
+
+    /**
+     * Creates a new PositionControlMotorSparkMax with constants P, S, V, A and G, including gravity compensation.
+     * @param deviceID
+     * The CAN ID of the Spark Max motor controller: This should be a unique ID assigned to the motor controller on the CAN bus, typically set using a hardware configuration tool or through code
+     * @param type
+     * The type of motor being used: This should be set to the appropriate motor type (e.g. brushless or brushed) to ensure proper control and feedback from the motor controller
+     * @param isInverted
+     * Whether the motor output should be inverted: Setting this to true will reverse the direction of the motor, which can be useful for certain mechanisms or to correct for wiring issues
+     * @param positionConversionFactor
+     * The factor to convert the motor's native units to the desired position units: Increasing it will make the controller more sensitive to position changes, but too high may cause instability
+     * @param velocityConversionFactor
+     * The factor to convert the motor's native units to the desired velocity units: Increasing it will make the controller more sensitive to velocity changes, but too high may cause instability
+     * @param kCruiseVelocity
+     * The cruise velocity for motion profiling: Increasing it will allow the controller to reach higher speeds, but too high may cause overshooting
+     * @param kMaxAcceleration
+     * The maximum acceleration for motion profiling: Increasing it will allow the controller to accelerate faster, but too high may cause instability
+     * @param kAllowedProfileError
+     * The allowed error for the motion profile: Increasing it will make the controller more tolerant to error, but too high may cause overshooting
+     * @param KP
+     * The proportional gain for the PID controller: Increasing it will increase the responsiveness of the controller, but too high may cause oscillation
+     * @param kS
+     * The static gain for the feedforward controller: helps overcome a constant resistance like friction in a gearbox
+     * @param kV
+     * The velocity gain for the feedforward controller: Increasing it will increase the voltage output proportionally to the velocity target
+     * @param kA
+     * The acceleration gain for the feedforward controller: Increasing it will help track acceleration more closely
+     * @param kG
+     * The gravity gain for the feedforward controller: helps compensate for gravity when moving vertically, increasing it will help hold position against gravity better but too high may cause overshooting when moving downwards
+     * @param idleMode
+     * The idle mode of the motor: kBrake will resist motion when not powered, kCoast will allow free movement
+     */
+    public static IMotorPositionControl CreateLinearFFSparkMaxPositionController(
+        int deviceID,
+        MotorType type,
+        boolean isInverted,
+        double positionConversionFactor,
+        double velocityConversionFactor,
+        double kCruiseVelocity,
+        double kMaxAcceleration,
+        double kAllowedProfileError,
+        double KP,
+        double kS,
+        double kV,
+        double kA,
+        double kG,
+        IdleMode idleMode
+    ) {
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, kG, 0, -1, 1, idleMode);
     }
 
     /**
@@ -176,7 +350,57 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kA,
         double kCos
     ) {
-        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, kCos, -1, 1);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, kCos, -1, 1, IdleMode.kBrake);
+    }
+
+    /**
+     * Creates a new PositionControlMotorSparkMax with constants P, S, V, A and kCosG, including gravity compensation for pivoting arm.
+     * @param deviceID
+     * The CAN ID of the Spark Max motor controller: This should be a unique ID assigned to the motor controller on the CAN bus, typically set using a hardware configuration tool or through code
+     * @param type
+     * The type of motor being used: This should be set to the appropriate motor type (e.g. brushless or brushed) to ensure proper control and feedback from the motor controller
+     * @param isInverted
+     * Whether the motor output should be inverted: Setting this to true will reverse the direction of the motor, which can be useful for certain mechanisms or to correct for wiring issues
+     * @param positionConversionFactor
+     * The factor to convert the motor's native units to the desired position units: Increasing it will make the controller more sensitive to position changes, but too high may cause instability
+     * @param velocityConversionFactor
+     * The factor to convert the motor's native units to the desired velocity units: Increasing it will make the controller more sensitive to velocity changes, but too high may cause instability
+     * @param kCruiseVelocity
+     * The cruise velocity for motion profiling: Increasing it will allow the controller to reach higher speeds, but too high may cause overshooting
+     * @param kMaxAcceleration
+     * The maximum acceleration for motion profiling: Increasing it will allow the controller to accelerate faster, but too high may cause instability
+     * @param kAllowedProfileError
+     * The allowed error for the motion profile: Increasing it will make the controller more tolerant to error, but too high may cause overshooting
+     * @param KP
+     * The proportional gain for the PID controller: Increasing it will increase the responsiveness of the controller, but too high may cause oscillation
+     * @param kS
+     * The static gain for the feedforward controller: helps overcome a constant resistance like friction in a gearbox
+     * @param kV
+     * The velocity gain for the feedforward controller: Increasing it will increase the voltage output proportionally to the velocity target
+     * @param kA
+     * The acceleration gain for the feedforward controller: Increasing it will help track acceleration more closely
+     * @param kCos
+     * The cosine gain for gravity compensation based on position: helps reduce overshooting when moving downwards by reducing gravity compensation as you approach vertical, increasing it will help reduce overshooting but too high may cause instability near vertical positions
+     * @param idleMode
+     * The idle mode of the motor: kBrake will resist motion when not powered, kCoast will allow free movement
+     */
+    public static IMotorPositionControl CreatePivotFFSparkMaxPositionController(
+        int deviceID,
+        MotorType type,
+        boolean isInverted,
+        double positionConversionFactor,
+        double velocityConversionFactor,
+        double kCruiseVelocity,
+        double kMaxAcceleration,
+        double kAllowedProfileError,
+        double KP,
+        double kS,
+        double kV,
+        double kA,
+        double kCos,
+        IdleMode idleMode
+    ) {
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, KP, 0, 0, kS, kV, kA, 0, kCos, -1, 1, idleMode);
     }
 
     /**
@@ -217,14 +441,59 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kG,
         double kCos
     ) {
-        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA, kG, kCos, -1, 1);
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA, kG, kCos, -1, 1, IdleMode.kBrake);
     }
 
     /**
-     * 
+     * DO NOT USE THIS UNLESS YOU KNOW WHAT ALL OF THESE PARAMETERS DO AND WHY YOU NEED TO SPECIFY ALL OF THEM.
+     * Note: This should only be used on rare occasions when ou need to specify all parameters. It is recommended to use one of the other CreateSparkMaxPositionController methods instead, as they have more reasonable defaults for the parameters that are not specified.
      * @param deviceID
      * @param isInverted
      * @param positionConversionFactor
+     * @param velocityConversionFactor
+     * @param kCruiseVelocity
+     * @param kMaxAcceleration
+     * @param kAllowedProfileError
+     * @param KP
+     * @param kI
+     * @param kD
+     * @param kS
+     * @param kV
+     * @param kA
+     * @param kG
+     * @param kCos
+     * @param idleMode
+     * The idle mode of the motor: kBrake will resist motion when not powered, kCoast will allow free movement
+     * @return
+     */
+    public static IMotorPositionControl OverloadCreateSparkMaxPositionController(
+        int deviceID,
+        MotorType type,
+        boolean isInverted,
+        double positionConversionFactor,
+        double velocityConversionFactor,
+        double kCruiseVelocity,
+        double kMaxAcceleration,
+        double kAllowedProfileError,
+        double kP,
+        double kI,
+        double kD,
+        double kS,
+        double kV,
+        double kA,
+        double kG,
+        double kCos,
+        IdleMode idleMode
+    ) {
+        return new SparkMaxPositionControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA, kG, kCos, -1, 1, idleMode);
+    }
+
+    /**
+     *
+     * @param deviceID
+     * @param isInverted
+     * @param positionConversionFactor
+     * @param velocityConversionFactor
      * @param kCruiseVelocity
      * @param kMaxAcceleration
      * @param kAllowedProfileError
@@ -236,6 +505,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
      * @param kA
      * @param kG
      * @param kCos
+     * @param idleMode
      */
     private SparkMaxPositionControl(int deviceID,
         MotorType type,
@@ -254,9 +524,9 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
         double kG,
         double kCos,
         double minOutput,
-        double maxOutput
+        double maxOutput,
+        IdleMode idleMode
         ) {
-    // Construct the wrapped SparkMax in the superclass and reuse it here.
     super(new SparkMax(deviceID, type));
     config = new SparkMaxConfig();
         config.inverted(isInverted).closedLoop
@@ -265,7 +535,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
                 .maxAcceleration(kMaxAcceleration)
                 .cruiseVelocity(kCruiseVelocity);
         config.
-        idleMode(IdleMode.kCoast).
+        idleMode(idleMode).
         closedLoop
             .p(kP)
             .i(kI)
@@ -277,7 +547,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
                 .kA(kA)
                 .kG(kG)
                 .kCos(kCos);
-                
+
         config.encoder
             .positionConversionFactor(positionConversionFactor)
             .velocityConversionFactor(velocityConversionFactor);

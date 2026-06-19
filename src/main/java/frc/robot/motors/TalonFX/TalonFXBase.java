@@ -1,5 +1,6 @@
 package frc.robot.motors.TalonFX;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.motors.IMotorBase;
@@ -30,5 +31,10 @@ public abstract class TalonFXBase implements IMotorBase {
     @Override
     public void runVoltage(double voltage) {
         talonFX.setVoltage(voltage);
-    } 
+    }
+
+    @Override
+    public void runDutyCycle(double output) {
+        talonFX.setControl(new DutyCycleOut(output));
+    }
 }

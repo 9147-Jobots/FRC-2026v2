@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.motors.IMotorVelocityControl;
 
@@ -37,7 +38,37 @@ public class TalonFXVelocityControl extends TalonFXBase implements IMotorVelocit
         double kS,
         double kV
     ) {
-        return new TalonFXVelocityControl(deviceID, isInverted, positionConversionFactor, kP, 0, 0, kS, kV);
+        return new TalonFXVelocityControl(deviceID, isInverted, positionConversionFactor, kP, 0, 0, kS, kV, NeutralModeValue.Brake);
+    }
+
+    /**
+     * Creates a new VelocityControlMotorTalonFX with constants P, S and V.
+     * @param deviceID
+     * CAN ID of the TalonFX motor controller.
+     * @param isInverted
+     * Whether the motor output should be inverted.
+     * @param positionConversionFactor
+     * The factor to convert the motor's native units to the desired position units.
+     * @param kP
+     * The proportional gain for the PID controller.
+     * @param kS
+     * The static gain for the feedforward controller.
+     * @param kV
+     * The velocity gain for the feedforward controller.
+     * @param neutralMode
+     * The neutral mode of the motor: Brake will resist motion when not powered, Coast will allow free movement.
+     * @return
+     */
+    public static IMotorVelocityControl CreateTalonFXVelocityControl(
+        int deviceID,
+        boolean isInverted,
+        double positionConversionFactor,
+        double kP,
+        double kS,
+        double kV,
+        NeutralModeValue neutralMode
+    ) {
+        return new TalonFXVelocityControl(deviceID, isInverted, positionConversionFactor, kP, 0, 0, kS, kV, neutralMode);
     }
 
     /**
@@ -71,7 +102,44 @@ public class TalonFXVelocityControl extends TalonFXBase implements IMotorVelocit
         double kS,
         double kV
     ) {
-        return new TalonFXVelocityControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, kV);
+        return new TalonFXVelocityControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, kV, NeutralModeValue.Brake);
+    }
+
+    /**
+     * DO NOT USE THIS UNLESS YOU KNOW WHAT YOU ARE DOING. Creates a new VelocityControlMotorTalonFX with constants P, I, D, S and V.
+     * This constructor allows you to specify all of the PID and feedforward constants, but it is not recommended to use it unless you have a specific reason to do so, as it can lead to confusion and errors if the constants are not set correctly.
+     * @param deviceID
+     * CAN ID of the TalonFX motor controller.
+     * @param isInverted
+     * Whether the motor output should be inverted.
+     * @param positionConversionFactor
+     * The factor to convert the motor's native units to the desired position units.
+     * @param kP
+     * The proportional gain for the PID controller.
+     * @param kI
+     * The integral gain for the PID controller.
+     * @param kD
+     * The derivative gain for the PID controller.
+     * @param kS
+     * The static gain for the feedforward controller.
+     * @param kV
+     * The velocity gain for the feedforward controller.
+     * @param neutralMode
+     * The neutral mode of the motor: Brake will resist motion when not powered, Coast will allow free movement.
+     * @return
+     */
+    public static IMotorVelocityControl OverloadCreateTalonFXVelocityControl(
+        int deviceID,
+        boolean isInverted,
+        double positionConversionFactor,
+        double kP,
+        double kI,
+        double kD,
+        double kS,
+        double kV,
+        NeutralModeValue neutralMode
+    ) {
+        return new TalonFXVelocityControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, kV, neutralMode);
     }
 
     /**
@@ -84,6 +152,7 @@ public class TalonFXVelocityControl extends TalonFXBase implements IMotorVelocit
      * @param kD
      * @param kS
      * @param kV
+     * @param neutralMode
      */
     private TalonFXVelocityControl(
         int deviceID,
@@ -93,20 +162,22 @@ public class TalonFXVelocityControl extends TalonFXBase implements IMotorVelocit
         double kI,
         double kD,
         double kS,
-        double kV
+        double kV,
+        NeutralModeValue neutralMode
     ) {
         super(new TalonFX(deviceID));
 
         // Configure the TalonFX with the provided parameters.
         configs = new TalonFXConfiguration();
         configs.MotorOutput.Inverted = isInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        configs.MotorOutput.NeutralMode = neutralMode;
         configs.Slot0.kP = kP;
         configs.Slot0.kI = kI;
         configs.Slot0.kD = kD;
         configs.Slot0.kS = kS;
         configs.Slot0.kV = kV;
         configs.Feedback.SensorToMechanismRatio = positionConversionFactor; // Convert from sensor units to desired output units.
-        
+
         talonFX.getConfigurator().apply(configs);
     }
 

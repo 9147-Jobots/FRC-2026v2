@@ -34,4 +34,9 @@ public abstract class SparkMaxBase implements IMotorBase {
     public void runVoltage(double voltage) {
         sparkMax.setVoltage(voltage);
     }
+
+    @Override
+    public void runDutyCycle(double output) {
+        sparkMax.set(output);
+    }
 }

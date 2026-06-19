@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.motors.IMotorVelocityControl;
 
@@ -54,9 +55,43 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
         double kV,
         double kA
     ) {
-        return new SparkMaxVelocityControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP,0, 0, kS, kV, kA);
+        return new SparkMaxVelocityControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, 0, 0, kS, kV, kA, IdleMode.kBrake);
     }
 
+    /**
+     * Creates a new Spark Max velocity controller with constants P, S, V and A.
+     * @param deviceID the CAN ID of the Spark Max
+     * @param type the type of motor being used
+     * @param isInverted whether the motor output should be inverted
+     * @param positionConversionFactor the factor to convert the motor's native units to the desired position units
+     * @param velocityConversionFactor the factor to convert the motor's native units to the desired velocity units
+     * @param kCruiseVelocity the cruise velocity for motion profiling
+     * @param kMaxAcceleration the maximum acceleration for motion profiling
+     * @param kAllowedProfileError the allowed error for the motion profile
+     * @param kP the proportional gain for the PID controller
+     * @param kS the static gain for the feedforward controller
+     * @param kV the velocity gain for the feedforward controller
+     * @param kA the acceleration gain for the feedforward controller
+     * @param idleMode the idle mode of the motor: kBrake will resist motion when not powered, kCoast will allow free movement
+     * @return
+     */
+    public static IMotorVelocityControl CreateSparkMaxVelocityController(
+        int deviceID,
+        MotorType type,
+        boolean isInverted,
+        double positionConversionFactor,
+        double velocityConversionFactor,
+        double kCruiseVelocity,
+        double kMaxAcceleration,
+        double kAllowedProfileError,
+        double kP,
+        double kS,
+        double kV,
+        double kA,
+        IdleMode idleMode
+    ) {
+        return new SparkMaxVelocityControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, 0, 0, kS, kV, kA, idleMode);
+    }
 
     /**
      * DO NOT USE THIS UNLESS YOU KNOW WHAT ALL OF THESE PARAMETERS DO AND WHY YOU NEED TO SPECIFY ALL OF THEM.
@@ -92,11 +127,49 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
         double kV,
         double kA
     ) {
-        return new SparkMaxVelocityControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA);
+        return new SparkMaxVelocityControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA, IdleMode.kBrake);
     }
 
     /**
-     * 
+     * DO NOT USE THIS UNLESS YOU KNOW WHAT ALL OF THESE PARAMETERS DO AND WHY YOU NEED TO SPECIFY ALL OF THEM.
+     * Note: This should only be used on rare occasions when ou need to specify all parameters. It is recommended to use one of the other CreateSparkMaxPositionController methods instead, as they have more reasonable defaults for the parameters that are not specified.
+     * @param deviceID the CAN ID of the Spark Max
+     * @param isInverted whether the motor output should be inverted
+     * @param positionConversionFactor the factor to convert the motor's native units to the desired position units
+     * @param velocityConversionFactor the factor to convert the motor's native units to the desired velocity units
+     * @param kCruiseVelocity the cruise velocity for motion profiling
+     * @param kMaxAcceleration the maximum acceleration for motion profiling
+     * @param kAllowedProfileError the allowed error for the motion profile
+     * @param KP the proportional gain for the PID controller
+     * @param kI the integral gain for the PID controller
+     * @param kD the derivative gain for the PID controller
+     * @param kS the static gain for the feedforward controller
+     * @param kV the velocity gain for the feedforward controller
+     * @param kA the acceleration gain for the feedforward controller
+     * @param idleMode the idle mode of the motor: kBrake will resist motion when not powered, kCoast will allow free movement
+     * @return
+     */
+    public static IMotorVelocityControl OverloadCreateSparkMaxVelocityController(
+        int deviceID,
+        MotorType type,
+        boolean isInverted,
+        double positionConversionFactor,
+        double velocityConversionFactor,
+        double kCruiseVelocity,
+        double kMaxAcceleration,
+        double kAllowedProfileError,
+        double kP,
+        double kI,
+        double kD,
+        double kS,
+        double kV,
+        double kA,
+        IdleMode idleMode
+    ) {
+        return new SparkMaxVelocityControl(deviceID, type, isInverted, positionConversionFactor, velocityConversionFactor, kCruiseVelocity, kMaxAcceleration, kAllowedProfileError, kP, kI, kD, kS, kV, kA, idleMode);
+    }
+
+    /**
      * @param deviceID
      * @param isInverted
      * @param positionConversionFactor
@@ -104,12 +177,13 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
      * @param kCruiseVelocity
      * @param kMaxAcceleration
      * @param kAllowedProfileError
-     * @param KP
+     * @param kP
      * @param kI
      * @param kD
      * @param kS
      * @param kV
      * @param kA
+     * @param idleMode
      */
     private SparkMaxVelocityControl(int deviceID,
         MotorType type,
@@ -124,7 +198,8 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
         double kD,
         double kS,
         double kV,
-        double kA
+        double kA,
+        IdleMode idleMode
         ) {
         super(new SparkMax(deviceID, type));
         config = new SparkMaxConfig();
@@ -134,8 +209,9 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
                 .maxAcceleration(kMaxAcceleration)
                 .cruiseVelocity(kCruiseVelocity)
                 .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
-        
+
         config.
+        idleMode(idleMode).
         closedLoop
             .p(kP)
             .i(kI)
@@ -143,7 +219,7 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
             .feedForward
                 .kV(kV)
                 .kA(kA);
-                
+
         config.encoder
             .positionConversionFactor(positionConversionFactor)
             .velocityConversionFactor(velocityConversionFactor);

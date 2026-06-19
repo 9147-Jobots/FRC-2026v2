@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.motors.IMotorPositionControl;
 
@@ -43,7 +44,40 @@ public class TalonFXPositionControl extends TalonFXBase implements IMotorPositio
         double kD,
         double kS
     ) {
-        return new TalonFXPositionControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, 0, 0);
+        return new TalonFXPositionControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, 0, 0, NeutralModeValue.Brake);
+    }
+
+    /**
+     * Creates a new PositionControlMotorSparkMax with constants P, I, D, S.
+     * @param deviceID
+     * CAN ID of the TalonFX motor controller.
+     * @param isInverted
+     * Whether the motor output should be inverted.
+     * @param positionConversionFactor
+     * Conversion factor from sensor units to desired output units.
+     * @param kP
+     * Proportional gain.
+     * @param kI
+     * Integral gain.
+     * @param kD
+     * Derivative gain.
+     * @param kS
+     * Static gain.
+     * @param neutralMode
+     * The neutral mode of the motor: Brake will resist motion when not powered, Coast will allow free movement.
+     * @return
+     */
+    public static IMotorPositionControl CreateTalonFXPositionControl(
+        int deviceID,
+        boolean isInverted,
+        double positionConversionFactor,
+        double kP,
+        double kI,
+        double kD,
+        double kS,
+        NeutralModeValue neutralMode
+    ) {
+        return new TalonFXPositionControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, 0, 0, neutralMode);
     }
 
     /**
@@ -76,7 +110,43 @@ public class TalonFXPositionControl extends TalonFXBase implements IMotorPositio
         double kS,
         double kG
     ) {
-        return new TalonFXPositionControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, kG, 0);
+        return new TalonFXPositionControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, kG, 0, NeutralModeValue.Brake);
+    }
+
+    /**
+     * Creates a new PositionControlMotorSparkMax with constants P, I, D, S and G, including gravity compensation.
+     * @param deviceID
+     * CAN ID of the TalonFX motor controller.
+     * @param isInverted
+     * Whether the motor output should be inverted.
+     * @param positionConversionFactor
+     * Conversion factor from sensor units to desired output units.
+     * @param kP
+     * Proportional gain.
+     * @param kI
+     * Integral gain.
+     * @param kD
+     * Derivative gain.
+     * @param kS
+     * Static gain.
+     * @param kG
+     * Gravity compensation gain.
+     * @param neutralMode
+     * The neutral mode of the motor: Brake will resist motion when not powered, Coast will allow free movement.
+     * @return
+     */
+    public static IMotorPositionControl CreateLinearFFTalonFXPositionControl(
+        int deviceID,
+        boolean isInverted,
+        double positionConversionFactor,
+        double kP,
+        double kI,
+        double kD,
+        double kS,
+        double kG,
+        NeutralModeValue neutralMode
+    ) {
+        return new TalonFXPositionControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, kG, 0, neutralMode);
     }
 
     /**
@@ -109,11 +179,46 @@ public class TalonFXPositionControl extends TalonFXBase implements IMotorPositio
         double kS,
         double kCos
     ) {
-        return new TalonFXPositionControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, 0, kCos);
+        return new TalonFXPositionControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, 0, kCos, NeutralModeValue.Brake);
     }
 
     /**
-     * 
+     * Creates a new PositionControlMotorSparkMax with constants P, I, D, S and kCosG, including gravity compensation for pivoting arm.
+     * @param deviceID
+     * CAN ID of the TalonFX motor controller.
+     * @param isInverted
+     * Whether the motor output should be inverted.
+     * @param positionConversionFactor
+     * Conversion factor from sensor units to desired output units.
+     * @param kP
+     * Proportional gain.
+     * @param kI
+     * Integral gain.
+     * @param kD
+     * Derivative gain.
+     * @param kS
+     * Static gain.
+     * @param kCos
+     * Cosine gain for gravity compensation.
+     * @param neutralMode
+     * The neutral mode of the motor: Brake will resist motion when not powered, Coast will allow free movement.
+     * @return
+     */
+    public static IMotorPositionControl CreatePivotFFTalonFXPositionControl(
+        int deviceID,
+        boolean isInverted,
+        double positionConversionFactor,
+        double kP,
+        double kI,
+        double kD,
+        double kS,
+        double kCos,
+        NeutralModeValue neutralMode
+    ) {
+        return new TalonFXPositionControl(deviceID, isInverted, positionConversionFactor, kP, kI, kD, kS, 0, kCos, neutralMode);
+    }
+
+    /**
      * @param deviceID
      * @param isInverted
      * @param positionConversionFactor
@@ -123,6 +228,7 @@ public class TalonFXPositionControl extends TalonFXBase implements IMotorPositio
      * @param kS
      * @param kG
      * @param kCos
+     * @param neutralMode
      */
     private TalonFXPositionControl(
         int deviceID,
@@ -133,12 +239,14 @@ public class TalonFXPositionControl extends TalonFXBase implements IMotorPositio
         double kD,
         double kS,
         double kG,
-        double kCos
+        double kCos,
+        NeutralModeValue neutralMode
     ) {
         super(new TalonFX(deviceID));
         configs = new TalonFXConfiguration();
 
         configs.MotorOutput.Inverted = isInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        configs.MotorOutput.NeutralMode = neutralMode;
 
         configs.Slot0.kP = kP;
         configs.Slot0.kI = kI;
