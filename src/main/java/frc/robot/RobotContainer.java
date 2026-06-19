@@ -24,9 +24,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 import frc.robot.commands.Drive.DriveCommand;
+import frc.robot.commands.Intake.IntakeDown;
 import frc.robot.commands.Intake.IntakeFuel;
 import frc.robot.commands.Intake.IntakeRest;
 import frc.robot.commands.Intake.IntakeUp;
+import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.StopIntakeSpin;
 import frc.robot.commands.Shooter.ShootFuel;
 import frc.robot.generated.TunerConstants;
@@ -44,6 +46,8 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController controller = new CommandXboxController(0);
+
+    private final CommandXboxController controller1 = new CommandXboxController(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -114,9 +118,13 @@ public class RobotContainer {
         );
 
         // Intake Bindings
-        controller.rightTrigger().whileTrue(new IntakeFuel(intake)).onFalse(new StopIntakeSpin(intake));
-        controller.y().onTrue(new IntakeRest(intake));
-        controller.x().onTrue(new IntakeUp(intake));
+        controller.a().onTrue(new IntakeDown(intake));
+        controller.leftTrigger().onTrue(new RunIntake(intake)).onFalse(new StopIntakeSpin(intake));
+
+        // Controller 2
+        controller1.rightTrigger().whileTrue(new ShootFuel(drivetrain, indexer, shooter));
+        controller1.povUp().onTrue(new IntakeUp(intake));
+        controller1.povRight().onTrue(new IntakeRest(intake));
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -126,9 +134,6 @@ public class RobotContainer {
         );
 
         drivetrain.registerTelemetry(logger::telemeterize);
-
-        controller.x().onTrue(Commands.runOnce(() -> ShooterService.runShooterKicker(shooter))).onFalse(Commands.runOnce(() -> ShooterService.stopShooterKicker(shooter)));
-        controller.leftTrigger().whileTrue(new ShootFuel(drivetrain, indexer, shooter));
     }
 
     public Command getAutonomousCommand() {
