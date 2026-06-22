@@ -234,7 +234,15 @@ public class ShooterService {
         SmartDashboard.putNumber("robot angle (field-rel)", robotFieldAngle);
         SmartDashboard.putNumber("turret actual angle (robot-rel)", turretRobotAngle);
         SmartDashboard.putNumber("turret angle (field-rel)", turretFieldAngle);
-        SmartDashboard.putNumber("turret target angle (robot-rel)", angle);
+        try {
+            Pose2d turrentPose = getTurretPose(drive);
+            Pose2d targetPose = getTargetPosition();
+            double targetFieldAngle = Math.atan2(
+                targetPose.getY() - turrentPose.getY(),
+                targetPose.getX() - turrentPose.getX()
+            ) * 180 / Math.PI;
+            SmartDashboard.putNumber("target angle (field-rel)", targetFieldAngle);
+        } catch (Exception e) {}
         shooter.runTurretPosition(angle);
     }
 }
