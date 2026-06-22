@@ -37,4 +37,8 @@ public class IndexerSubsystem extends SubsystemBase {
     public void runVelocity(double value) {
         motor.runVelocity(value);
     }
+
+    public void runDutyCycle(double value) {
+        motor.runDutyCycle(value);
+    }
 }

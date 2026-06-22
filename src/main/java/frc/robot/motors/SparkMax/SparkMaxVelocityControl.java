@@ -249,6 +249,11 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
     }
 
     @Override
+    public void runDutyCycle(double setpoint) {
+        pid.setSetpoint(setpoint, ControlType.kDutyCycle);
+    }
+
+    @Override
     public double getSetpoint() {
         return pid.getSetpoint();
     }

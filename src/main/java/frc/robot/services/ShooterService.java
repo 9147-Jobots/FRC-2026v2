@@ -62,8 +62,8 @@ public class ShooterService {
                 return;
             }
 
-            shooter.runKickerVelocity(30);
-            indexer.runVelocity(20);
+            indexer.runDutyCycle(0.8);
+            shooter.runKickerDutyCycle(1);
 
         } catch (Exception e) {
             shooter.runKickerVelocity(0);

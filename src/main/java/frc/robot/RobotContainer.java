@@ -109,8 +109,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             DriveCommand.joystickDrive(
                 drivetrain,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
+                () -> controller.getLeftY(),
+                () -> controller.getLeftX(),
                 () -> controller.getRightX(),
                 controller.leftBumper(),
                 controller.rightBumper()

@@ -24,8 +24,8 @@ public class IntakeSubsystem extends SubsystemBase {
             false,
             1,
             1,
-            450,
             3000,
+            4000,
             0.1,
             0,
             0.18,
@@ -37,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase {
             false,
             16*9/11,
             1,
-            5000,
+            7000,
             3000,
             1,
             0.14,
@@ -58,6 +58,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void runPivotPosition(double value) {
         pivot.runPosition(value);
+    }
+
+    public void runSpinDutyCycle(double value) {
+        spin.runDutyCycle(value);
     }
 
     public double getPivotPosition() {

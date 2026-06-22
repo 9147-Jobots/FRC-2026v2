@@ -23,6 +23,6 @@ public class RunIntake extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.runSpinVelocity(5000);
+    m_intake.runSpinDutyCycle(1);
   }
 }

@@ -98,6 +98,10 @@ public class ShooterSubsystem extends SubsystemBase {
         kicker.runVelocity(value);
     }
 
+    public void runKickerDutyCycle(double value) {
+        kicker.runDutyCycle(value);
+    }
+
     public double getKickerVelocity() {
         return kicker.getVelocity();
     }
