@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motors.IMotorPositionControl;
 import frc.robot.motors.IMotorVelocityControl;
@@ -72,5 +73,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic() {
         pivot_tuner.update();
         spin_tuner.update();
+        SmartDashboard.putNumber("pivot velocity", pivot.getVelocity());
+        SmartDashboard.putNumber("pivot position", pivot.getPosition());
     }
 }
