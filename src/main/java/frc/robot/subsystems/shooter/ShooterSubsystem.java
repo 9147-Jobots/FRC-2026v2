@@ -26,7 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private static final double  TURRET_CRUISE_VEL      = 10000;        // TURRET_MAX_VELOCITY (RPM)
     private static final double  TURRET_MAX_ACCEL       = 60000;       // TURRET_MAX_ACCELERATION (RPM/s)
     private static final double  TURRET_ALLOWED_ERROR   = 1.0;
-    public  static final double  TURRET_OFFSET          = -180.0;      // TURRENT_OFFSET from old ShooterIOSparkMax
+    public  static final double  TURRET_OFFSET          = -187.0;      // TURRENT_OFFSET from old ShooterIOSparkMax
     // -------------------------------------------------------------------------
 
     IMotorVelocityControl shooter;

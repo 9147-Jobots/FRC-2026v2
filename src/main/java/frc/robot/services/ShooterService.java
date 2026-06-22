@@ -97,7 +97,7 @@ public class ShooterService {
             if (distance < ShooterServiceConstants.distanceAngle[i][0]) {
                 double t = (distance - ShooterServiceConstants.distanceAngle[i-1][0])/(ShooterServiceConstants.distanceAngle[i][0] - ShooterServiceConstants.distanceAngle[i-1][0]);
                 SmartDashboard.putBoolean("Interpolation Found", true);
-                return ShooterServiceConstants.distanceAngle[i-1][1] + t*(ShooterServiceConstants.distanceAngle[i][1]-ShooterServiceConstants.distanceAngle[i-1][1]);
+                return ShooterServiceConstants.distanceAngle[i-1][1] + t*(ShooterServiceConstants.distanceAngle[i][1]-ShooterServiceConstants.distanceAngle[i-1][1]) + ShooterServiceConstants.offset;
             }
         }
         SmartDashboard.putBoolean("Interpolation Found", false);
@@ -171,7 +171,7 @@ public class ShooterService {
     }
 
     private static double getAngleToArea(CommandSwerveDrivetrain drive) {
-        double fieldAngle = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red) ? 0 : 180;
+        double fieldAngle = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red) ? -5 : 175;
         return fieldAngle - drive.getRotation3d().toRotation2d().getDegrees();
     }
 

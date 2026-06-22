@@ -19,11 +19,13 @@ public class ShooterServiceConstants {
         new double[] {5.30, 4200},
     };
 
+    public static double offset = 100;    
+
     public static double distanceConstant = 0.2; // not entirey sure how this is meant to be set
 
     public static Pose2d BLUE_TARGET = new Pose2d(4.625, 4.035, new Rotation2d());
     public static Pose2d RED_TARGET = new Pose2d(11.920, 4.035, new Rotation2d());
 
-    public static final double Turrent_x = -0.183;
-    public static final double Turrent_y = 0.012;
+    public static final double Turrent_x = -0.15;
+    public static final double Turrent_y = 0.0;
 }
