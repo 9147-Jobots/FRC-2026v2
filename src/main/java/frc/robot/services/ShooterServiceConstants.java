@@ -24,8 +24,6 @@ public class ShooterServiceConstants {
     public static Pose2d BLUE_TARGET = new Pose2d(4.625, 4.035, new Rotation2d());
     public static Pose2d RED_TARGET = new Pose2d(11.920, 4.035, new Rotation2d());
 
-    public static double KICKER_RUN_VELOCITY = 30;
-
     public static final double Turrent_x = -0.183;
     public static final double Turrent_y = 0.012;
 }

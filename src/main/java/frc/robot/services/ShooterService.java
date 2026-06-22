@@ -18,7 +18,7 @@ import com.ctre.phoenix6.jni.UtilsJNI;
 
 public class ShooterService {
     public static void runIndexer(IndexerSubsystem indexer) {
-        indexer.runVelocity(5); // TO BE TUNED
+        indexer.runDutyCycle(0.8);
     }
 
     public static void stopIndexer(IndexerSubsystem indexer) {
@@ -34,7 +34,7 @@ public class ShooterService {
     }
 
     public static void runShooterKicker(ShooterSubsystem shooter) {
-        shooter.runKickerVelocity(5); // TO BE TUNED
+        shooter.runKickerDutyCycle(1);
     }
 
     public static void stopShooterKicker(ShooterSubsystem shooter) {
@@ -57,17 +57,17 @@ public class ShooterService {
             shooter.runShooterVelocity(targetRPM);
             
             if (Math.abs(shooter.getShooterVelocity() - targetRPM) > 200) {
-                shooter.runKickerVelocity(0);
-                indexer.runVelocity(0);
+                runShooterKicker(shooter);
+                stopIndexer(indexer);
                 return;
             }
 
-            indexer.runDutyCycle(0.8);
-            shooter.runKickerDutyCycle(1);
+            runIndexer(indexer);
+            runShooterKicker(shooter);
 
         } catch (Exception e) {
-            shooter.runKickerVelocity(0);
-            indexer.runVelocity(0);
+            stopShooterKicker(shooter);
+            stopIndexer(indexer);
         }
     }
 
@@ -181,11 +181,11 @@ public class ShooterService {
             shooter.runShooterVelocity(targetRPM);
             if (Math.abs(shooter.getShooterVelocity() - targetRPM) > 200) {
                 stopShooterKicker(shooter);;
-                indexer.runVelocity(0);
+                stopIndexer(indexer);
                 return;
             }
 
-            shooter.runKickerVelocity(ShooterServiceConstants.KICKER_RUN_VELOCITY);
+            runShooterKicker(shooter);
             runIndexer(indexer);
         } catch (Exception e) {
             stopShooterKicker(shooter);

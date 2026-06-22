@@ -11,11 +11,11 @@ import frc.robot.services.IntakeService;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeRest extends InstantCommand {
+public class IntakeMiddle extends InstantCommand {
   IntakeSubsystem m_intakeSubsystem;
 
   /** Creates a new IntakeRest. */
-  public IntakeRest(IntakeSubsystem intakeSubsystem) {
+  public IntakeMiddle(IntakeSubsystem intakeSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
     addRequirements(intakeSubsystem);
 
@@ -24,6 +24,6 @@ public class IntakeRest extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    IntakeService.IntakePivotRest(m_intakeSubsystem);
+    IntakeService.IntakePivotMiddle(m_intakeSubsystem);
   }
 }

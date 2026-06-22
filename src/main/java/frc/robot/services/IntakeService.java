@@ -19,8 +19,8 @@ public class IntakeService {
         intake.runPivotPosition(IntakeServiceConstants.INTAKE_PIVOT_UP);
     }
 
-    public static void IntakePivotRest(IntakeSubsystem intake) {
-        intake.runPivotPosition(IntakeServiceConstants.INTAKE_PIVOT_REST);
+    public static void IntakePivotMiddle(IntakeSubsystem intake) {
+        intake.runPivotPosition(IntakeServiceConstants.INTAKE_PIVOT_MIDDLE);
     }
 
     public static boolean runIntakeSpinIfPivotDown(IntakeSubsystem intake) {
