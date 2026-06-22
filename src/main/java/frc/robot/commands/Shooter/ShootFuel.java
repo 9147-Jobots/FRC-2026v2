@@ -32,7 +32,7 @@ public class ShootFuel extends Command {
   @Override
   public void execute() {
     ShooterService.AlignTurretPeriodic(m_shooter, m_drive);
-    ShooterService.shootFuel(m_shooter, m_indexer, m_drive);
+    //ShooterService.shootFuel(m_shooter, m_indexer, m_drive);
   }
 
   // Called once the command ends or is interrupted.

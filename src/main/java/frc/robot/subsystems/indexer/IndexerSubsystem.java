@@ -31,7 +31,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        tuner.update();
+        //tuner.update();
     }
 
     public void runVelocity(double value) {

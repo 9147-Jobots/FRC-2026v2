@@ -21,7 +21,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private static final int     TURRET_CURRENT_LIMIT   = 40;
     private static final double  TURRET_POS_CONV_FACTOR = 9;           // CONVERSION_FACTOR from old code
     private static final double  TURRET_VEL_CONV_FACTOR = 1;           // RPM, unchanged from old code
-    private static final double  TURRET_KP              = 0.1;         // TURRET_PID_MODES[0]
+    private static final double  TURRET_KP              = 0.05;         // TURRET_PID_MODES[0]
     private static final double  TURRET_KV              = 0.0;         // TURRET_KV
     private static final double  TURRET_CRUISE_VEL      = 10000;        // TURRET_MAX_VELOCITY (RPM)
     private static final double  TURRET_MAX_ACCEL       = 60000;       // TURRET_MAX_ACCELERATION (RPM/s)
@@ -122,7 +122,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        kicker_tuner.update();
-        turret_tuner.update();
+        //kicker_tuner.update();
+        //turret_tuner.update();
     }
 }

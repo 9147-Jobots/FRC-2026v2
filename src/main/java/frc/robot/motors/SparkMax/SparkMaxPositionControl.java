@@ -2,6 +2,7 @@ package frc.robot.motors.SparkMax;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.motors.IMotorPositionControl;
@@ -533,7 +534,8 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
             .maxMotion
                 .allowedProfileError(kAllowedProfileError)
                 .maxAcceleration(kMaxAcceleration)
-                .cruiseVelocity(kCruiseVelocity);
+                .cruiseVelocity(kCruiseVelocity)
+                .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
         config.
         idleMode(idleMode).
         closedLoop
