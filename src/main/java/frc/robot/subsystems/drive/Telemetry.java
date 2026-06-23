@@ -1,7 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import java.lang.reflect.Field;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
@@ -23,15 +21,18 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Telemetry {
     private final double MaxSpeed;
+    private final Field2d m_field = new Field2d();
 
     /**
      * Construct a telemetry object, with the specified max speed of the robot
-     * 
+     *
      * @param maxSpeed Maximum speed in meters per second
      */
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
         SignalLogger.start();
+
+        SmartDashboard.putData("Field", m_field);
 
         /* Set up the module state Mechanism2d telemetry */
         for (int i = 0; i < 4; ++i) {
@@ -98,6 +99,9 @@ public class Telemetry {
         SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
         SignalLogger.writeInteger("DriveState/FailedDaqs", state.FailedDaqs);
+
+        /* Telemeterize the pose to Field2d */
+        m_field.setRobotPose(state.Pose);
 
         /* Telemeterize each module state to a Mechanism2d */
         String[] moduleNames = {"FrontLeft", "FrontRight", "BackLeft", "BackRight"};
