@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
@@ -51,9 +52,9 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    // private final Vision vision = new Vision(
-    //     (pose, timestamp, stdDevs) -> drivetrain.addVisionMeasurement(pose, timestamp, stdDevs)
-    // );
+    private final Vision vision = new Vision(
+        (pose, timestamp, stdDevs) -> drivetrain.addVisionMeasurement(pose, timestamp, stdDevs)
+    );
 
     // subsystems
     private final IndexerSubsystem indexer;
@@ -112,7 +113,7 @@ public class RobotContainer {
                 () -> controller.getLeftY(),
                 () -> controller.getLeftX(),
                 () -> controller.getRightX(),
-                controller.leftBumper(),
+                controller.rightTrigger(),
                 controller.rightBumper()
             )
         );
@@ -123,6 +124,11 @@ public class RobotContainer {
 
         // Controller 2
         controller1.rightTrigger().whileTrue(new ShootFuel(drivetrain, indexer, shooter));
+        controller1.leftTrigger().whileTrue(new InstantCommand(() -> {
+            indexer.runDutyCycle(-0.5);
+        })).onFalse(new InstantCommand(() -> {
+            indexer.runDutyCycle(0);
+        }));
         controller1.povUp().onTrue(new IntakeUp(intake));
         controller1.povRight().onTrue(new IntakeMiddle(intake));
 
