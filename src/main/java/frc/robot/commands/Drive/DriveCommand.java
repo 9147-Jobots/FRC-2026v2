@@ -22,8 +22,6 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.generated.TunerConstants;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.function.BooleanSupplier;
@@ -45,12 +43,6 @@ public class DriveCommand {
     double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
-    ProfiledPIDController snapYController = new ProfiledPIDController(
-        DriveCommandConstants.SNAP_Y_KP, 0, 0,
-        new TrapezoidProfile.Constraints(
-            DriveCommandConstants.SNAP_Y_MAX_VELOCITY,
-            DriveCommandConstants.SNAP_Y_MAX_ACCELERATION));
-
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(MaxSpeed * DriveCommandConstants.DEADBAND)
         .withRotationalDeadband(MaxAngularRate * DriveCommandConstants.DEADBAND)
@@ -68,10 +60,8 @@ public class DriveCommand {
         double dist1 = Math.abs(currentY - DriveCommandConstants.SNAP_Y_BRIDGE_POS1);
         double dist2 = Math.abs(currentY - DriveCommandConstants.SNAP_Y_BRIDGE_POS2);
         double target = dist1 <= dist2 ? DriveCommandConstants.SNAP_Y_BRIDGE_POS1 : DriveCommandConstants.SNAP_Y_BRIDGE_POS2;
-        snapYController.setGoal(target);
-        velocityY = MathUtil.clamp(snapYController.calculate(currentY), -1.0, 1.0) * MaxSpeed;
+        velocityY = MathUtil.clamp((target - currentY) * DriveCommandConstants.SNAP_Y_KP, -1.0, 1.0) * MaxSpeed;
       } else {
-        snapYController.reset(currentY);
         velocityY = -ySupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.Y_IN * speedMult;
       }
 

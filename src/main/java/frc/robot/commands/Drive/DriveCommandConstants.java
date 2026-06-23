@@ -19,7 +19,5 @@ public class DriveCommandConstants {
     public static final double SNAP_Y_BRIDGE_POS1       = 0.6;
     public static final double SNAP_Y_BRIDGE_POS2       = 7.5;
 
-    public static final double SNAP_Y_KP                = 1.0;
-    public static final double SNAP_Y_MAX_VELOCITY      = 3.0; // m/s
-    public static final double SNAP_Y_MAX_ACCELERATION  = 4.0; // m/s^2
+    public static final double SNAP_Y_KP                = 0.4;
 }
