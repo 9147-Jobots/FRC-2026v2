@@ -60,7 +60,7 @@ public class DriveCommand {
         double dist1 = Math.abs(currentY - DriveCommandConstants.SNAP_Y_BRIDGE_POS1);
         double dist2 = Math.abs(currentY - DriveCommandConstants.SNAP_Y_BRIDGE_POS2);
         double target = dist1 <= dist2 ? DriveCommandConstants.SNAP_Y_BRIDGE_POS1 : DriveCommandConstants.SNAP_Y_BRIDGE_POS2;
-        velocityY = MathUtil.clamp((target - currentY) * DriveCommandConstants.SNAP_Y_KP, -1.0, 1.0) * MaxSpeed;
+        velocityY = -MathUtil.clamp((target - currentY) * DriveCommandConstants.SNAP_Y_KP, -1.0, 1.0) * MaxSpeed;
       } else {
         velocityY = -ySupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.Y_IN * speedMult;
       }

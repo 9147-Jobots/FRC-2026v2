@@ -19,5 +19,5 @@ public class DriveCommandConstants {
     public static final double SNAP_Y_BRIDGE_POS1       = 0.6;
     public static final double SNAP_Y_BRIDGE_POS2       = 7.5;
 
-    public static final double SNAP_Y_KP                = 0.4;
+    public static final double SNAP_Y_KP                = 0.6;
 }
