@@ -51,9 +51,9 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    private final Vision vision = new Vision(
-        (pose, timestamp, stdDevs) -> drivetrain.addVisionMeasurement(pose, timestamp, stdDevs)
-    );
+    // private final Vision vision = new Vision(
+    //     (pose, timestamp, stdDevs) -> drivetrain.addVisionMeasurement(pose, timestamp, stdDevs)
+    // );
 
     // subsystems
     private final IndexerSubsystem indexer;
@@ -86,8 +86,8 @@ public class RobotContainer {
                         .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                 ),
                 new PPHolonomicDriveController(
-                    new PIDConstants(10, 0, 0), // translation PID — tune these
-                    new PIDConstants(7, 0, 0)   // rotation PID — tune these
+                    new PIDConstants(0.1, 0, 0), // translation PID — tune these
+                    new PIDConstants(1, 0, 0)   // rotation PID — tune these
                 ),
                 config,
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
