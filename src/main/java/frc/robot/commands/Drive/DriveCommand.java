@@ -21,6 +21,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.generated.TunerConstants;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,7 +69,7 @@ public class DriveCommand {
         double dist2 = Math.abs(currentY - DriveCommandConstants.SNAP_Y_BRIDGE_POS2);
         double target = dist1 <= dist2 ? DriveCommandConstants.SNAP_Y_BRIDGE_POS1 : DriveCommandConstants.SNAP_Y_BRIDGE_POS2;
         snapYController.setGoal(target);
-        velocityY = snapYController.calculate(currentY);
+        velocityY = MathUtil.clamp(snapYController.calculate(currentY), -1.0, 1.0) * MaxSpeed;
       } else {
         snapYController.reset(currentY);
         velocityY = -ySupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.Y_IN * speedMult;
