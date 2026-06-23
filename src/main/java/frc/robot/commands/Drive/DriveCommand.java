@@ -37,8 +37,7 @@ public class DriveCommand {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      BooleanSupplier slowMode,
-      BooleanSupplier fastMode) {
+      BooleanSupplier slowMode) {
     double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
@@ -49,10 +48,8 @@ public class DriveCommand {
 
     return drivetrain.applyRequest(() -> {
       double speedMult = slowMode.getAsBoolean() ? DriveCommandConstants.SLOW_SPEED_MULTIPLIER
-          : fastMode.getAsBoolean() ? DriveCommandConstants.FAST_SPEED_MULTIPLIER
           : DriveCommandConstants.DEFAULT_SPEED_MULTIPLIER;
       double turnMult = slowMode.getAsBoolean() ? DriveCommandConstants.SLOW_TURN_MULTIPLIER
-          : fastMode.getAsBoolean() ? DriveCommandConstants.FAST_TURN_MULTIPLIER
           : DriveCommandConstants.DEFAULT_TURN_MULTIPLIER;
       return drive
           .withVelocityX(-xSupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.X_IN * speedMult)
