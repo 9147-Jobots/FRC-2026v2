@@ -21,6 +21,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.generated.TunerConstants;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.function.BooleanSupplier;
@@ -37,9 +39,16 @@ public class DriveCommand {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      BooleanSupplier slowMode) {
+      BooleanSupplier slowMode,
+      BooleanSupplier snapToBridge) {
     double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+
+    ProfiledPIDController snapYController = new ProfiledPIDController(
+        DriveCommandConstants.SNAP_Y_KP, 0, 0,
+        new TrapezoidProfile.Constraints(
+            DriveCommandConstants.SNAP_Y_MAX_VELOCITY,
+            DriveCommandConstants.SNAP_Y_MAX_ACCELERATION));
 
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(MaxSpeed * DriveCommandConstants.DEADBAND)
@@ -51,9 +60,23 @@ public class DriveCommand {
           : DriveCommandConstants.DEFAULT_SPEED_MULTIPLIER;
       double turnMult = slowMode.getAsBoolean() ? DriveCommandConstants.SLOW_TURN_MULTIPLIER
           : DriveCommandConstants.DEFAULT_TURN_MULTIPLIER;
+
+      double currentY = drivetrain.getState().Pose.getY();
+      double velocityY;
+      if (snapToBridge.getAsBoolean()) {
+        double dist1 = Math.abs(currentY - DriveCommandConstants.SNAP_Y_BRIDGE_POS1);
+        double dist2 = Math.abs(currentY - DriveCommandConstants.SNAP_Y_BRIDGE_POS2);
+        double target = dist1 <= dist2 ? DriveCommandConstants.SNAP_Y_BRIDGE_POS1 : DriveCommandConstants.SNAP_Y_BRIDGE_POS2;
+        snapYController.setGoal(target);
+        velocityY = snapYController.calculate(currentY);
+      } else {
+        snapYController.reset(currentY);
+        velocityY = -ySupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.Y_IN * speedMult;
+      }
+
       return drive
           .withVelocityX(-xSupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.X_IN * speedMult)
-          .withVelocityY(-ySupplier.getAsDouble() * MaxSpeed * DriveCommandConstants.Y_IN * speedMult)
+          .withVelocityY(velocityY)
           .withRotationalRate(-omegaSupplier.getAsDouble() * MaxAngularRate * DriveCommandConstants.OMEGA_IN * turnMult);
     });
   }

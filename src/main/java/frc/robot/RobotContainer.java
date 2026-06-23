@@ -105,14 +105,15 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        // left bumper = slow mode
+        // left bumper = slow mode, right bumper = snap to nearest bridge position
         drivetrain.setDefaultCommand(
             DriveCommand.joystickDrive(
                 drivetrain,
                 () -> controller.getLeftY(),
                 () -> controller.getLeftX(),
                 () -> controller.getRightX(),
-                controller.leftBumper()
+                controller.leftBumper(),
+                controller.rightBumper()
             )
         );
 

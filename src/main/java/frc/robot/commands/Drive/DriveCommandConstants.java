@@ -14,5 +14,12 @@ public class DriveCommandConstants {
 
     public static final double FAST_SPEED_MULTIPLIER    = 1.1;
     public static final double FAST_TURN_MULTIPLIER     = 1.0;
-    
+
+    // Field Y positions (meters) for bridge snap — TO BE TUNED
+    public static final double SNAP_Y_BRIDGE_POS1       = 2.0;
+    public static final double SNAP_Y_BRIDGE_POS2       = 6.0;
+
+    public static final double SNAP_Y_KP                = 1.0;
+    public static final double SNAP_Y_MAX_VELOCITY      = 3.0; // m/s
+    public static final double SNAP_Y_MAX_ACCELERATION  = 4.0; // m/s^2
 }
