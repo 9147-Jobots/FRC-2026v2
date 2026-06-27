@@ -1,6 +1,9 @@
 package frc.robot.subsystems.shooter;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motors.IMotorPositionControl;
 import frc.robot.motors.IMotorPositionControl.PositionControlMode;
@@ -9,6 +12,7 @@ import frc.robot.motors.SparkMax.SparkMaxPositionControl;
 import frc.robot.motors.SparkMax.SparkMaxVelocityControl;
 import frc.robot.motors.tuning.PositionGainsTuner;
 import frc.robot.motors.tuning.VelocityGainsTuner;
+import frc.robot.services.ShooterService;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -26,7 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private static final double  TURRET_CRUISE_VEL      = 10000;        // TURRET_MAX_VELOCITY (RPM)
     private static final double  TURRET_MAX_ACCEL       = 60000;       // TURRET_MAX_ACCELERATION (RPM/s)
     private static final double  TURRET_ALLOWED_ERROR   = 1.0;
-    public  static final double  TURRET_OFFSET          = -187.0;      // TURRENT_OFFSET from old ShooterIOSparkMax
+    public  static final double  TURRET_OFFSET          = -187.0 + 10;      // TURRENT_OFFSET from old ShooterIOSparkMax
     // -------------------------------------------------------------------------
 
     IMotorVelocityControl shooter;

@@ -242,11 +242,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-
-        Field2d field = new Field2d();
-        field.setRobotPose(samplePoseAt(UtilsJNI.getCurrentTimeSeconds()).get());
-
-        SmartDashboard.putData(field);
     }
 
     private void startSimThread() {

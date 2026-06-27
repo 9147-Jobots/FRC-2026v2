@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RLeftMidRun"
+            "pathName": "BRTBack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShootFuel"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Red",
+  "folder": "Blue",
   "choreoAuto": false
 }

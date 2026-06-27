@@ -19,7 +19,7 @@ public class ShooterServiceConstants {
         new double[] {5.30, 4200},
     };
 
-    public static double offset = 100;    
+    public static double offset = 50;    
 
     public static double distanceConstant = 0.2; // not entirey sure how this is meant to be set
 

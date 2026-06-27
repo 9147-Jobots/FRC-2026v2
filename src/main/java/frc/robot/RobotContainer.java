@@ -9,12 +9,15 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,6 +35,8 @@ import frc.robot.commands.Intake.IntakeUp;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.StopIntakeSpin;
 import frc.robot.commands.Shooter.ShootFuel;
+import frc.robot.commands.autos.AutoIntake;
+import frc.robot.commands.autos.AutoShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.Telemetry;
@@ -77,7 +82,14 @@ public class RobotContainer {
         try {
             RobotConfig config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
-                () -> drivetrain.getState().Pose,
+                () -> {
+                    var pose = drivetrain.getState().Pose;
+                    if (pose == null) {
+                        return new Pose2d();
+                    } 
+
+                    return pose;
+                },
                 drivetrain::resetPose,
                 () -> drivetrain.getState().Speeds,
                 (speeds, feedforwards) -> drivetrain.setControl(
@@ -94,6 +106,11 @@ public class RobotContainer {
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 drivetrain
             );
+            
+            // NamedCommands Initialisation
+            NamedCommands.registerCommand("AutoIntake", new AutoIntake(intake));
+            NamedCommands.registerCommand("AutoShootFuel", new AutoShootFuel(drivetrain, indexer, shooter));
+
         } catch (Exception e) {
             DriverStation.reportError("PathPlanner config failed: " + e.getMessage(), e.getStackTrace());
         }
@@ -126,6 +143,7 @@ public class RobotContainer {
         controller1.rightTrigger().whileTrue(new ShootFuel(drivetrain, indexer, shooter));
         controller1.leftTrigger().whileTrue(new InstantCommand(() -> {
             indexer.runDutyCycle(-0.5);
+            shooter.runKickerDutyCycle(-0.5);
         })).onFalse(new InstantCommand(() -> {
             indexer.runDutyCycle(0);
         }));
@@ -145,4 +163,10 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
     }
-}
+
+    public void periodic() {
+        SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+        SmartDashboard.putBoolean("Is In Middle", ShooterService.isInMiddle(drivetrain));
+        SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
+    }
+    }

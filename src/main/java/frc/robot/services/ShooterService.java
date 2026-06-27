@@ -193,7 +193,7 @@ public class ShooterService {
         }
     }
 
-    private static boolean isInMiddle(CommandSwerveDrivetrain drive) {
+    public static boolean isInMiddle(CommandSwerveDrivetrain drive) {
         Optional<Pose2d> optionalRobotPose = drive.samplePoseAt(UtilsJNI.getCurrentTimeSeconds());
 
         Pose2d robotPose;
