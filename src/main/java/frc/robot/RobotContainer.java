@@ -48,6 +48,7 @@ import frc.robot.services.ShooterService;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    private double trimConstant = 1;
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -146,9 +147,29 @@ public class RobotContainer {
             shooter.runKickerDutyCycle(-0.5);
         })).onFalse(new InstantCommand(() -> {
             indexer.runDutyCycle(0);
+            shooter.runKickerDutyCycle(0);
         }));
-        controller1.povUp().onTrue(new IntakeUp(intake));
-        controller1.povRight().onTrue(new IntakeMiddle(intake));
+        controller1.y().onTrue(new IntakeUp(intake));
+        controller1.a().onTrue(new IntakeMiddle(intake));
+        controller.x().onTrue(Commands.run(() -> {trimConstant = 0.33;}))
+        .onFalse(Commands.run(() -> {trimConstant = 1;}));
+
+        controller.b().onTrue(Commands.run(() -> {trimConstant = 2;}))
+        .onFalse(Commands.run(() -> {trimConstant = 1;}));
+
+        controller1.povRight().whileTrue(Commands.run(() -> {
+            shooter.incrementOffset(0.60 * trimConstant);
+        }));
+        controller1.povLeft().whileTrue(Commands.run(() -> {
+            shooter.incrementOffset(-0.60 * trimConstant);
+        }));
+
+        controller1.povUp().whileTrue(Commands.run(() -> {
+            intake.incrementOffset(0.5);
+        }));
+        controller1.povDown().whileTrue(Commands.run(() -> {
+            intake.incrementOffset(-0.5);
+        }));
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.

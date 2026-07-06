@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BRTBack"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoShootFuel"
+            "pathName": "MiddleDisrupt"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Blue",
+  "folder": null,
   "choreoAuto": false
 }

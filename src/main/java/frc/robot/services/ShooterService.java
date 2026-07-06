@@ -101,7 +101,7 @@ public class ShooterService {
             }
         }
         SmartDashboard.putBoolean("Interpolation Found", false);
-        return -1;
+        return ShooterServiceConstants.distanceAngle[0][1];
     }
 
     public static double getShootAreaRpm() {

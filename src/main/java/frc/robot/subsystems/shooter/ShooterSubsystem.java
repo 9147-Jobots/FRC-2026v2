@@ -124,6 +124,11 @@ public class ShooterSubsystem extends SubsystemBase {
         return turret.getPosition();
     }
 
+    public void incrementOffset(double increment) {
+        double curr = turret.getPosition();
+        turret.zeroPosition(curr + increment);
+    }
+
     @Override
     public void periodic() {
         //kicker_tuner.update();

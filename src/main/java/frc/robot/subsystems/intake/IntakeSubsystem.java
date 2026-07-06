@@ -39,15 +39,15 @@ public class IntakeSubsystem extends SubsystemBase {
             false,
             16*9/11,
             1,
+            5500,
             5000,
-            3000,
             1,
-            0.14,
+            0.14, // was 0.14
             0,
             0,
             0,
             0.42,
-            IdleMode.kCoast);
+            IdleMode.kBrake);
 
         pivot.zeroPosition(132);
 
@@ -69,6 +69,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public double getPivotPosition() {
         return pivot.getPosition();
+    }
+
+    public void incrementOffset(double increment) {
+        double curr = pivot.getPosition();
+        pivot.zeroPosition(curr + increment);
     }
 
     @Override

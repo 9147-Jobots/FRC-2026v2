@@ -41,6 +41,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
+    private Field2d field = new Field2d();
+
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -242,6 +244,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        Optional<Pose2d> optionalRobotPose = samplePoseAt(UtilsJNI.getCurrentTimeSeconds());
+
+        Pose2d robotPose;
+        if (optionalRobotPose.isPresent()) {
+            robotPose = optionalRobotPose.get();
+        } else {
+            robotPose = new Pose2d();
+        }
+        field.setRobotPose(robotPose);
+        SmartDashboard.putData("Field", field);
     }
 
     private void startSimThread() {
