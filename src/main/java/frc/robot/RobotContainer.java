@@ -218,36 +218,39 @@ public class RobotContainer {
         field.setRobotPose(robotPose);
 
         String m_lastAuto = null;
-        String selectedAuto = autoChooser.getSelected().getName();
-        
-        if (!DriverStation.isEnabled()) {
-            // Check if the selection changed to avoid spamming NetworkTables
-            if (!selectedAuto.equals(m_lastAuto)) {
-                m_lastAuto = selectedAuto;
+        try {
+            String selectedAuto = autoChooser.getSelected().getName();
 
-                // Create an empty list to populate safely
-                List<Pose2d> autoPoses = new ArrayList<>();
-                
-                // Get the path group from the auto file
-                try {
-                    // This is the line that throws the exceptions
-                    List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(selectedAuto);
+            if (!DriverStation.isEnabled()) {
+                // Check if the selection changed to avoid spamming NetworkTables
+                if (!selectedAuto.equals(m_lastAuto)) {
+                    m_lastAuto = selectedAuto;
+
+                    // Create an empty list to populate safely
+                    List<Pose2d> autoPoses = new ArrayList<>();
                     
-                    if (paths != null) {
-                        for (PathPlannerPath path : paths) {
-                            autoPoses.addAll(path.getPathPoses());
+                    // Get the path group from the auto file
+                    try {
+                        // This is the line that throws the exceptions
+                        List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(selectedAuto);
+                        
+                        if (paths != null) {
+                            for (PathPlannerPath path : paths) {
+                                autoPoses.addAll(path.getPathPoses());
+                            }
                         }
+                        
+                    } catch (Exception e) {
+                        // Catch-all for any other unhandled runtime errors
+                        DriverStation.reportError("Unexpected error loading auto: " + selectedAuto, e.getStackTrace());
                     }
                     
-                } catch (Exception e) {
-                    // Catch-all for any other unhandled runtime errors
-                    DriverStation.reportError("Unexpected error loading auto: " + selectedAuto, e.getStackTrace());
+                    // Plot onto field
+                    field.getObject("Autonomous Path").setPoses(autoPoses);
                 }
-                
-                // Plot onto field
-                field.getObject("Autonomous Path").setPoses(autoPoses);
             }
-        }
+        } catch (Exception e) {}
+        
         SmartDashboard.putData("Field", field);
     }
 }

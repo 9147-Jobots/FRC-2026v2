@@ -53,6 +53,6 @@ public class AutoShootFuel extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.hasElapsed(5) || !DriverStation.isAutonomous();
+    return m_timer.hasElapsed(7) || !DriverStation.isAutonomous();
   }
 }

@@ -27,7 +27,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "LeftTrench-LeftMid"
+                        "pathName": "RightTrench-RightMid"
                       }
                     },
                     {
@@ -39,19 +39,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "LeftMid-MiddleMid"
+                        "pathName": "RightMid-MiddleMid"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "MiddleMid-LeftPostTrench"
+                        "pathName": "MiddleMid-RightPostTrench"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "LeftPostTrench-LeftPreTrench"
+                        "pathName": "RightPostTrench-RightShoot"
                       }
                     },
                     {

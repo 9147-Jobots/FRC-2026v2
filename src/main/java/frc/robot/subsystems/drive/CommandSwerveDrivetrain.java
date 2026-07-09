@@ -287,7 +287,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         // out dashboard
-        SmartDashboard.putBoolean("Shooter enabled", ShooterService.getDistanceToTarget(this) > 2.4);
+        SmartDashboard.putBoolean("AbleToShoot", ShooterService.getDistanceToTarget(this) > 2.4);
     }
 
     private void startSimThread() {
