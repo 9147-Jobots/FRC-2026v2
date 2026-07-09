@@ -171,7 +171,7 @@ public class ShooterService {
     }
 
     private static double getAngleToArea(CommandSwerveDrivetrain drive) {
-        double fieldAngle = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red) ? 0 : 180;
+        double fieldAngle = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue) ? 0 : 180;
         return fieldAngle - drive.getRotation3d().toRotation2d().getDegrees();
     }
 

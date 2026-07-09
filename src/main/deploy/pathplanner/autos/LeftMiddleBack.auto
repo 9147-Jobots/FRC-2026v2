@@ -62,9 +62,35 @@
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "AutoShootFuel"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AutoShootFuel"
+                            }
+                          },
+                          {
+                            "type": "sequential",
+                            "data": {
+                              "commands": [
+                                {
+                                  "type": "wait",
+                                  "data": {
+                                    "waitTime": 5.0
+                                  }
+                                },
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "AutoIntakeMiddle"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
