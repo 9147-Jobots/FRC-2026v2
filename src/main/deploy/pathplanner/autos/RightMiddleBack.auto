@@ -9,9 +9,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "AutoIntake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoIntakeGround"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoIntakeSpin"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -28,12 +41,6 @@
                       "type": "path",
                       "data": {
                         "pathName": "RightTrench-RightMid"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 5.0
                       }
                     },
                     {

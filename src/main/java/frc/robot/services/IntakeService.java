@@ -4,7 +4,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class IntakeService {
     public static void runIntakeSpin(IntakeSubsystem intake) {
-        intake.runSpinVelocity(1000); // TO BE TUNED
+        intake.runSpinDutyCycle(1);
     }
 
     public static void stopIntakeSpin(IntakeSubsystem intake) {
@@ -32,9 +32,8 @@ public class IntakeService {
         return false;
     }
 
-    public static boolean runIntakeSpinIfPivotDown(IntakeSubsystem intake) {
+    public static boolean isIntakeGround(IntakeSubsystem intake) {
         if (intake.getPivotPosition() < (IntakeServiceConstants.INTAKE_PIVOT_GROUND + IntakeServiceConstants.DEADZONE)) {
-            intake.runSpinDutyCycle(1);
             return true;
         }
 

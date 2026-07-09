@@ -4,16 +4,17 @@
 
 package frc.robot.commands.autos;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.services.IntakeService;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AutoIntake extends Command {
+public class AutoIntakeSpin extends Command {
   IntakeSubsystem m_intake;
 
-  /** Creates a new AutoIntake. */
-  public AutoIntake(IntakeSubsystem intake) {
+  /** Creates a new AutoIntakeSpin. */
+  public AutoIntakeSpin(IntakeSubsystem intake) {
     m_intake = intake;
 
     addRequirements(m_intake);
@@ -22,7 +23,7 @@ public class AutoIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    IntakeService.IntakePivotGround(m_intake);
+    IntakeService.runIntakeSpin(m_intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,12 +34,13 @@ public class AutoIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    IntakeService.stopIntakeSpin(m_intake);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (IntakeService.runIntakeSpinIfPivotDown(m_intake)) {
+    if (!DriverStation.isAutonomous()) {
       return true;
     } else {
       return false;

@@ -6,14 +6,12 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.ctre.phoenix6.jni.UtilsJNI;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -23,11 +21,6 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -42,14 +35,14 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Intake.IntakeDown;
-import frc.robot.commands.Intake.IntakeFuel;
 import frc.robot.commands.Intake.IntakeMiddle;
 import frc.robot.commands.Intake.IntakeUp;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.StopIntakeSpin;
 import frc.robot.commands.Shooter.ShootFuel;
-import frc.robot.commands.autos.AutoIntake;
+import frc.robot.commands.autos.AutoIntakeGround;
 import frc.robot.commands.autos.AutoIntakeMiddle;
+import frc.robot.commands.autos.AutoIntakeSpin;
 import frc.robot.commands.autos.AutoShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -125,7 +118,9 @@ public class RobotContainer {
             );
             
             // NamedCommands Initialisation
-            NamedCommands.registerCommand("AutoIntake", new AutoIntake(intake));
+            NamedCommands.registerCommand("AutoIntakeGround", new AutoIntakeGround(intake));
+            NamedCommands.registerCommand("AutoIntakeSpin", new AutoIntakeSpin(intake));
+            NamedCommands.registerCommand("AutoIntake", new AutoIntakeGround(intake));
             NamedCommands.registerCommand("AutoShootFuel", new AutoShootFuel(drivetrain, indexer, shooter));
             NamedCommands.registerCommand("AutoIntakeMiddle", new AutoIntakeMiddle(intake));
 
