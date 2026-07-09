@@ -5,6 +5,7 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.services.ShooterService;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -16,6 +17,7 @@ public class AutoShootFuel extends Command {
   CommandSwerveDrivetrain m_drive;
   IndexerSubsystem m_indexer;
   ShooterSubsystem m_shooter;
+  private Timer m_timer = new Timer();
 
   /** Creates a new AutoShootFuel. */
   public AutoShootFuel(CommandSwerveDrivetrain drive, IndexerSubsystem indexer, ShooterSubsystem shooter) {
@@ -27,7 +29,10 @@ public class AutoShootFuel extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_timer.reset();
+    m_timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -42,14 +47,12 @@ public class AutoShootFuel extends Command {
     ShooterService.stopShooterKicker(m_shooter);
     ShooterService.stopShooterShooter(m_shooter);
     ShooterService.stopIndexer(m_indexer);
+    m_timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (DriverStation.isAutonomous()) {
-      return false;
-    }
-    return true;
+    return m_timer.hasElapsed(5) || !DriverStation.isAutonomous();
   }
 }

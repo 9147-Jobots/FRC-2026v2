@@ -23,9 +23,18 @@ public class IntakeService {
         intake.runPivotPosition(IntakeServiceConstants.INTAKE_PIVOT_MIDDLE);
     }
 
+    public static boolean isIntakeMiddle(IntakeSubsystem intake) {
+        if (intake.getPivotPosition() < (IntakeServiceConstants.INTAKE_PIVOT_MIDDLE + IntakeServiceConstants.DEADZONE / 2) ||
+            intake.getPivotPosition() < (IntakeServiceConstants.INTAKE_PIVOT_MIDDLE - IntakeServiceConstants.DEADZONE / 2)) {
+            
+            return true;
+        }
+        return false;
+    }
+
     public static boolean runIntakeSpinIfPivotDown(IntakeSubsystem intake) {
         if (intake.getPivotPosition() < (IntakeServiceConstants.INTAKE_PIVOT_GROUND + IntakeServiceConstants.DEADZONE)) {
-            runIntakeSpin(intake);
+            intake.runSpinDutyCycle(1);
             return true;
         }
 

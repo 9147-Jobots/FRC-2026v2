@@ -11,7 +11,7 @@ public class VisionConstants {
         public static final double Z     =  0.07;   // 4cm bottom, 10cm top → center 7cm
         public static final double PITCH = 10  * Math.PI / 180; // 10deg up
         public static final double ROLL  = 0;
-        public static final double YAW   = 145 * Math.PI / 180; // backward, 35deg toward left
+        public static final double YAW   = 145 * Math.PI / 180; // backward, 35 deg toward left
     }
 
     public static final class CameraRight {
@@ -20,6 +20,6 @@ public class VisionConstants {
         public static final double Z     =  0.07;   // 4cm bottom, 10cm top → center 7cm
         public static final double PITCH = 10  * Math.PI / 180; // 10deg up
         public static final double ROLL  = 0;
-        public static final double YAW   = 215 * Math.PI / 180; // backward, 35deg toward right
+        public static final double YAW   = 215 * Math.PI / 180; // backward, 35 deg toward right
     }
 }

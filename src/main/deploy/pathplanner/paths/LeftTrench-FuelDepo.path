@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6527840909090905,
-        "y": 3.4165909090909086
+        "x": 3.5484078711985685,
+        "y": 5.844132379248658
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6897571700755347,
-        "y": 3.169340041717401
+        "x": 2.607334525939176,
+        "y": 5.834293381037567
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LeftBump"
     },
     {
       "anchor": {
-        "x": 2.6527840909090905,
-        "y": 5.416113636363637
+        "x": 0.8387656529516991,
+        "y": 5.973935599284436
       },
       "prevControl": {
-        "x": 2.6302144682296853,
-        "y": 4.667732545297882
+        "x": 1.7798389982110912,
+        "y": 5.947871198568873
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "FuelDepo"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment"
+            "pathName": "LeftTrench-LeftShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShootFuel"
           }
         }
       ]

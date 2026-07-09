@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -16,10 +17,15 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -31,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.services.ShooterService;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -43,8 +50,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.004; // 4 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-
-    private Field2d field = new Field2d();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -138,6 +143,39 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        
+        SwerveModulePosition[] modulePositions = getState().ModulePositions;
+        SwerveModuleState[] moduleStates = getState().ModuleStates;
+        
+        Pose2d pose = getState().Pose;
+
+        SmartDashboard.putData("SwerveState",
+        builder -> {
+          builder.setSmartDashboardType("SwerveDrive");
+
+          builder.addDoubleProperty(
+              "Front Left Angle", () -> modulePositions[0].angle.getRadians(), null);
+          builder.addDoubleProperty(
+              "Front Left Velocity", () -> moduleStates[0].speedMetersPerSecond, null);
+
+          builder.addDoubleProperty(
+              "Front Right Angle", () -> modulePositions[1].angle.getRadians(), null);
+          builder.addDoubleProperty(
+              "Front Right Velocity", () -> moduleStates[1].speedMetersPerSecond, null);
+
+          builder.addDoubleProperty(
+              "Back Left Angle", () -> modulePositions[2].angle.getRadians(), null);
+          builder.addDoubleProperty(
+              "Back Left Velocity", () -> moduleStates[2].speedMetersPerSecond, null);
+
+          builder.addDoubleProperty(
+              "Back Right Angle", () -> modulePositions[3].angle.getRadians(), null);
+          builder.addDoubleProperty(
+              "Back Right Velocity", () -> moduleStates[3].speedMetersPerSecond, null);
+
+          builder.addDoubleProperty(
+              "Robot Angle", () -> pose.getRotation().getRadians(), null);
+        });
     }
 
     /**
@@ -247,49 +285,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        Optional<Pose2d> optionalRobotPose = samplePoseAt(UtilsJNI.getCurrentTimeSeconds());
 
-        Pose2d robotPose;
-        if (optionalRobotPose.isPresent()) {
-            robotPose = optionalRobotPose.get();
-        } else {
-            robotPose = new Pose2d();
-        }
-        field.setRobotPose(robotPose);
-        SmartDashboard.putData("Field", field);
-
-        SwerveModulePosition[] modulePositions = getState().ModulePositions;
-        SwerveModuleState[] moduleStates = getState().ModuleStates;
-        
-        Pose2d pose = getState().Pose;
-
-        SmartDashboard.putData("Swerve",
-        builder -> {
-          builder.setSmartDashboardType("SwerveDrive");
-
-          builder.addDoubleProperty(
-              "Front Left Angle", () -> modulePositions[0].angle.getRadians(), null);
-          builder.addDoubleProperty(
-              "Front Left Velocity", () -> moduleStates[0].speedMetersPerSecond, null);
-
-          builder.addDoubleProperty(
-              "Front Right Angle", () -> modulePositions[1].angle.getRadians(), null);
-          builder.addDoubleProperty(
-              "Front Right Velocity", () -> moduleStates[1].speedMetersPerSecond, null);
-
-          builder.addDoubleProperty(
-              "Back Left Angle", () -> modulePositions[2].angle.getRadians(), null);
-          builder.addDoubleProperty(
-              "Back Left Velocity", () -> moduleStates[2].speedMetersPerSecond, null);
-
-          builder.addDoubleProperty(
-              "Back Right Angle", () -> modulePositions[3].angle.getRadians(), null);
-          builder.addDoubleProperty(
-              "Back Right Velocity", () -> moduleStates[3].speedMetersPerSecond, null);
-
-          builder.addDoubleProperty(
-              "Robot Angle", () -> pose.getRotation().getRadians(), null);
-        });
+        // out dashboard
+        SmartDashboard.putBoolean("Shooter enabled", ShooterService.getDistanceToTarget(this) > 2.4);
     }
 
     private void startSimThread() {

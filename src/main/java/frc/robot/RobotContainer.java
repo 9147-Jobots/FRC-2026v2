@@ -6,19 +6,32 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.swerve.SwerveRequest;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
+import com.ctre.phoenix6.jni.UtilsJNI;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +49,7 @@ import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.StopIntakeSpin;
 import frc.robot.commands.Shooter.ShootFuel;
 import frc.robot.commands.autos.AutoIntake;
+import frc.robot.commands.autos.AutoIntakeMiddle;
 import frc.robot.commands.autos.AutoShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -69,13 +83,15 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser;
 
-    public RobotContainer() {
-        autoChooser = configureAutoBuilder();
+    private Field2d field = new Field2d();
 
+    public RobotContainer() {
+        
         indexer = new IndexerSubsystem();
         shooter = new ShooterSubsystem();
         intake = new IntakeSubsystem();
-
+        
+        autoChooser = configureAutoBuilder();
         configureBindings();
     }
 
@@ -100,7 +116,7 @@ public class RobotContainer {
                         .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                 ),
                 new PPHolonomicDriveController(
-                    new PIDConstants(0.1, 0, 0), // translation PID — tune these
+                    new PIDConstants(1, 0, 0), // translation PID — tune these
                     new PIDConstants(1, 0, 0)   // rotation PID — tune these
                 ),
                 config,
@@ -111,6 +127,7 @@ public class RobotContainer {
             // NamedCommands Initialisation
             NamedCommands.registerCommand("AutoIntake", new AutoIntake(intake));
             NamedCommands.registerCommand("AutoShootFuel", new AutoShootFuel(drivetrain, indexer, shooter));
+            NamedCommands.registerCommand("AutoIntakeMiddle", new AutoIntakeMiddle(intake));
 
         } catch (Exception e) {
             DriverStation.reportError("PathPlanner config failed: " + e.getMessage(), e.getStackTrace());
@@ -189,5 +206,48 @@ public class RobotContainer {
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putBoolean("Is In Middle", ShooterService.isInMiddle(drivetrain));
         SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
+
+        Optional<Pose2d> optionalRobotPose = drivetrain.samplePoseAt(UtilsJNI.getCurrentTimeSeconds());
+
+            Pose2d robotPose;
+            if (optionalRobotPose.isPresent()) {
+                robotPose = optionalRobotPose.get();
+            } else {
+                robotPose = new Pose2d();
+            }
+        field.setRobotPose(robotPose);
+
+        String m_lastAuto = null;
+        String selectedAuto = autoChooser.getSelected().getName();
+        
+        if (!DriverStation.isEnabled()) {
+            // Check if the selection changed to avoid spamming NetworkTables
+            if (!selectedAuto.equals(m_lastAuto)) {
+                m_lastAuto = selectedAuto;
+
+                // Create an empty list to populate safely
+                List<Pose2d> autoPoses = new ArrayList<>();
+                
+                // Get the path group from the auto file
+                try {
+                    // This is the line that throws the exceptions
+                    List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(selectedAuto);
+                    
+                    if (paths != null) {
+                        for (PathPlannerPath path : paths) {
+                            autoPoses.addAll(path.getPathPoses());
+                        }
+                    }
+                    
+                } catch (Exception e) {
+                    // Catch-all for any other unhandled runtime errors
+                    DriverStation.reportError("Unexpected error loading auto: " + selectedAuto, e.getStackTrace());
+                }
+                
+                // Plot onto field
+                field.getObject("Autonomous Path").setPoses(autoPoses);
+            }
+        }
+        SmartDashboard.putData("Field", field);
     }
-    }
+}

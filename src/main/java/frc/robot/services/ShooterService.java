@@ -48,7 +48,7 @@ public class ShooterService {
             if (isInMiddle(drive)) {
                 targetRPM = getShootAreaRpm();
             } else {
-                targetRPM = getTargetRpm(getDistance(drive));
+                targetRPM = getTargetRpm(getDistanceToTarget(drive));
             }
             SmartDashboard.putNumber("TargetRPM", targetRPM);
             if (targetRPM == -1) {
@@ -128,7 +128,7 @@ public class ShooterService {
         return robotPose.transformBy(movement);
     }
 
-    private static double getDistance(CommandSwerveDrivetrain drive) {
+    public static double getDistanceToTarget(CommandSwerveDrivetrain drive) {
         try {
             Pose2d turrentPose = getTurretPose(drive);
             Pose2d targetPose = getTargetPosition();
@@ -171,7 +171,7 @@ public class ShooterService {
     }
 
     private static double getAngleToArea(CommandSwerveDrivetrain drive) {
-        double fieldAngle = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red) ? -5 : 175;
+        double fieldAngle = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red) ? 0 : 180;
         return fieldAngle - drive.getRotation3d().toRotation2d().getDegrees();
     }
 
@@ -234,6 +234,7 @@ public class ShooterService {
         SmartDashboard.putNumber("robot angle (field-rel)", robotFieldAngle);
         SmartDashboard.putNumber("turret actual angle (robot-rel)", turretRobotAngle);
         SmartDashboard.putNumber("turret angle (field-rel)", turretFieldAngle);
+        SmartDashboard.putNumber("curr turret angle", angle);
         try {
             Pose2d turrentPose = getTurretPose(drive);
             Pose2d targetPose = getTargetPosition();

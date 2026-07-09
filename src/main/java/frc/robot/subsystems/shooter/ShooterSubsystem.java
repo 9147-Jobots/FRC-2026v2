@@ -116,7 +116,8 @@ public class ShooterSubsystem extends SubsystemBase {
             
         while (degrees > 50) {
             degrees -= 360;}
-
+        SmartDashboard.putNumber("turret pid position", degrees);
+        SmartDashboard.putNumber("curr turret pid position", turret.getPosition());
         turret.runPosition(degrees, PositionControlMode.kDirectPID);
     }
 

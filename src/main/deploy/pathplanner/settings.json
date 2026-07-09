@@ -2,12 +2,12 @@
   "robotWidth": 0.9,
   "robotLength": 0.9,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [
-    "CollectDeposit",
-    "Deposit",
-    "DisruptMid"
+  "pathFolders": [
+    "Left",
+    "Middle",
+    "Right"
   ],
+  "autoFolders": [],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 270.0,
