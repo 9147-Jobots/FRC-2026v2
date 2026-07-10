@@ -16,7 +16,7 @@ public class AutoIntakeGround extends Command {
   public AutoIntakeGround(IntakeSubsystem intake) {
     m_intake = intake;
 
-    addRequirements(m_intake);
+    addRequirements();
   }
 
   // Called when the command is initially scheduled.

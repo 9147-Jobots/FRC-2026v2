@@ -58,7 +58,6 @@ public class RobotContainer {
         (pose, timestamp, stdDevs) -> drivetrain.addVisionMeasurement(pose, timestamp, stdDevs)
     );
 
-    // subsystems
     private final IndexerSubsystem indexer;
     private final ShooterSubsystem shooter;
     private final IntakeSubsystem intake;
@@ -66,12 +65,12 @@ public class RobotContainer {
     public final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        
         indexer = new IndexerSubsystem();
         shooter = new ShooterSubsystem();
         intake = new IntakeSubsystem();
         
         autoChooser = configureAutoBuilder();
+
         configureBindings();
     }
 
@@ -103,19 +102,22 @@ public class RobotContainer {
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 drivetrain
             );
-            
-            // NamedCommands Initialisation
-            NamedCommands.registerCommand("AutoIntakeGround", new AutoIntakeGround(intake));
-            NamedCommands.registerCommand("AutoIntakeSpin", new AutoIntakeSpin(intake));
-            NamedCommands.registerCommand("AutoIntake", new AutoIntakeGround(intake));
-            NamedCommands.registerCommand("AutoShootFuel", new AutoShootFuel(drivetrain, indexer, shooter));
-            NamedCommands.registerCommand("AutoIntakeMiddle", new AutoIntakeMiddle(intake));
 
         } catch (Exception e) {
             DriverStation.reportError("PathPlanner config failed: " + e.getMessage(), e.getStackTrace());
         }
 
+        // NamedCommands Initialisation
+        NamedCommands.registerCommand("AutoIntakeGround", new AutoIntakeGround(intake));
+        NamedCommands.registerCommand("AutoIntakeSpin", new AutoIntakeSpin(intake));
+        NamedCommands.registerCommand("AutoIntake", new AutoIntakeGround(intake));
+        NamedCommands.registerCommand("AutoShootFuel", new AutoShootFuel(drivetrain, indexer, shooter));
+        NamedCommands.registerCommand("AutoIntakeMiddle", new AutoIntakeMiddle(intake));
+
         SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
+
+        chooser.setDefaultOption("None", Commands.none().withName("None"));
+
         SmartDashboard.putData("Auto Chooser", chooser);
         return chooser;
     }

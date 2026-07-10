@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import frc.robot.services.ShooterService;
 
 public class Robot extends TimedRobot {
@@ -32,6 +33,11 @@ public class Robot extends TimedRobot {
   public Robot() {
     m_robotContainer = new RobotContainer();
 
+  }
+
+  @Override
+  public void robotInit() {
+    DriverStation.silenceJoystickConnectionWarning(true);
   }
 
   @Override
@@ -54,7 +60,7 @@ public class Robot extends TimedRobot {
     try {
       String selectedAuto = m_robotContainer.autoChooser.getSelected().getName();
 
-      if (!DriverStation.isEnabled()) {
+      if (!DriverStation.isEnabled() && (!selectedAuto.equals("None"))) {
         if (!selectedAuto.equals(m_lastAuto)) {
           m_lastAuto = selectedAuto;
 
@@ -70,7 +76,7 @@ public class Robot extends TimedRobot {
             }
                         
             } catch (Exception e) {
-              DriverStation.reportError("Unexpected error loading auto: " + selectedAuto, e.getStackTrace());
+              DriverStation.reportError("Unexpected error loading auto: " + selectedAuto + " | " + e.getMessage(), e.getStackTrace());
             }
                             
             // Plot onto field

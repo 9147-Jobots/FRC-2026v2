@@ -17,7 +17,7 @@ public class AutoIntakeSpin extends Command {
   public AutoIntakeSpin(IntakeSubsystem intake) {
     m_intake = intake;
 
-    addRequirements(m_intake);
+    addRequirements();
   }
 
   // Called when the command is initially scheduled.
