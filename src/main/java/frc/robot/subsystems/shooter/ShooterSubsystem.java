@@ -19,8 +19,8 @@ public class ShooterSubsystem extends SubsystemBase {
     // -------------------------------------------------------------------------
     private static final int     TURRET_CAN_ID         = 9;
     private static final boolean TURRET_INVERTED        = true;
-    private static final double  TURRET_VOLTAGE_COMP    = 12.0;
-    private static final int     TURRET_CURRENT_LIMIT   = 40;
+    // private static final double  TURRET_VOLTAGE_COMP    = 12.0;
+    // private static final int     TURRET_CURRENT_LIMIT   = 40;
     private static final double  TURRET_POS_CONV_FACTOR = 9;           // CONVERSION_FACTOR from old code
     private static final double  TURRET_VEL_CONV_FACTOR = 1;           // RPM, unchanged from old code
     private static final double  TURRET_KP              = 0.05;         // TURRET_PID_MODES[0]

@@ -6,25 +6,16 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.ctre.phoenix6.jni.UtilsJNI;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -51,17 +42,15 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.services.ShooterService;
 
 public class RobotContainer {
+    private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(1);
+
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     private double trimConstant = 1;
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
-
-    private final CommandXboxController controller = new CommandXboxController(0);
-
-    private final CommandXboxController controller1 = new CommandXboxController(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -74,9 +63,7 @@ public class RobotContainer {
     private final ShooterSubsystem shooter;
     private final IntakeSubsystem intake;
 
-    private final SendableChooser<Command> autoChooser;
-
-    private Field2d field = new Field2d();
+    public final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         
@@ -140,46 +127,46 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             DriveCommand.joystickDrive(
                 drivetrain,
-                () -> controller.getLeftY(),
-                () -> controller.getLeftX(),
-                () -> controller.getRightX(),
-                controller.rightTrigger(),
-                controller.rightBumper()
+                () -> driver.getLeftY(),
+                () -> driver.getLeftX(),
+                () -> driver.getRightX(),
+                driver.rightTrigger(),
+                driver.rightBumper()
             )
         );
 
         // Intake Bindings
-        controller.a().onTrue(new IntakeDown(intake));
-        controller.leftTrigger().onTrue(new RunIntake(intake)).onFalse(new StopIntakeSpin(intake));
+        driver.a().onTrue(new IntakeDown(intake));
+        driver.leftTrigger().onTrue(new RunIntake(intake)).onFalse(new StopIntakeSpin(intake));
 
         // Controller 2
-        controller1.rightTrigger().whileTrue(new ShootFuel(drivetrain, indexer, shooter));
-        controller1.leftTrigger().whileTrue(new InstantCommand(() -> {
+        operator.rightTrigger().whileTrue(new ShootFuel(drivetrain, indexer, shooter));
+        operator.leftTrigger().whileTrue(new InstantCommand(() -> {
             indexer.runDutyCycle(-0.5);
             shooter.runKickerDutyCycle(-0.5);
         })).onFalse(new InstantCommand(() -> {
             indexer.runDutyCycle(0);
             shooter.runKickerDutyCycle(0);
         }));
-        controller1.y().onTrue(new IntakeUp(intake));
-        controller1.a().onTrue(new IntakeMiddle(intake));
-        controller.x().onTrue(Commands.run(() -> {trimConstant = 0.33;}))
+        operator.y().onTrue(new IntakeUp(intake));
+        operator.a().onTrue(new IntakeMiddle(intake));
+        driver.x().onTrue(Commands.run(() -> {trimConstant = 0.33;}))
         .onFalse(Commands.run(() -> {trimConstant = 1;}));
 
-        controller.b().onTrue(Commands.run(() -> {trimConstant = 2;}))
+        driver.b().onTrue(Commands.run(() -> {trimConstant = 2;}))
         .onFalse(Commands.run(() -> {trimConstant = 1;}));
 
-        controller1.povRight().whileTrue(Commands.run(() -> {
+        operator.povRight().whileTrue(Commands.run(() -> {
             shooter.incrementOffset(0.60 * trimConstant);
         }));
-        controller1.povLeft().whileTrue(Commands.run(() -> {
+        operator.povLeft().whileTrue(Commands.run(() -> {
             shooter.incrementOffset(-0.60 * trimConstant);
         }));
 
-        controller1.povUp().whileTrue(Commands.run(() -> {
+        operator.povUp().whileTrue(Commands.run(() -> {
             intake.incrementOffset(0.5);
         }));
-        controller1.povDown().whileTrue(Commands.run(() -> {
+        operator.povDown().whileTrue(Commands.run(() -> {
             intake.incrementOffset(-0.5);
         }));
 
@@ -195,57 +182,5 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
-    }
-
-    public void periodic() {
-        SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-        SmartDashboard.putBoolean("Is In Middle", ShooterService.isInMiddle(drivetrain));
-        SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
-
-        Optional<Pose2d> optionalRobotPose = drivetrain.samplePoseAt(UtilsJNI.getCurrentTimeSeconds());
-
-            Pose2d robotPose;
-            if (optionalRobotPose.isPresent()) {
-                robotPose = optionalRobotPose.get();
-            } else {
-                robotPose = new Pose2d();
-            }
-        field.setRobotPose(robotPose);
-
-        String m_lastAuto = null;
-        try {
-            String selectedAuto = autoChooser.getSelected().getName();
-
-            if (!DriverStation.isEnabled()) {
-                // Check if the selection changed to avoid spamming NetworkTables
-                if (!selectedAuto.equals(m_lastAuto)) {
-                    m_lastAuto = selectedAuto;
-
-                    // Create an empty list to populate safely
-                    List<Pose2d> autoPoses = new ArrayList<>();
-                    
-                    // Get the path group from the auto file
-                    try {
-                        // This is the line that throws the exceptions
-                        List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(selectedAuto);
-                        
-                        if (paths != null) {
-                            for (PathPlannerPath path : paths) {
-                                autoPoses.addAll(path.getPathPoses());
-                            }
-                        }
-                        
-                    } catch (Exception e) {
-                        // Catch-all for any other unhandled runtime errors
-                        DriverStation.reportError("Unexpected error loading auto: " + selectedAuto, e.getStackTrace());
-                    }
-                    
-                    // Plot onto field
-                    field.getObject("Autonomous Path").setPoses(autoPoses);
-                }
-            }
-        } catch (Exception e) {}
-        
-        SmartDashboard.putData("Field", field);
     }
 }

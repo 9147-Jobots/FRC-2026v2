@@ -147,9 +147,8 @@ public class ShooterService {
             Pose2d relativePose = targetPose.relativeTo(turrentPose);
             return Math.atan2(relativePose.getY(), relativePose.getX())*180/Math.PI;
         } catch (Exception e) {
-            // TODO: handle exception
+            return 0;
         }
-        return 0;
     } 
 
     public static void aimTurret(ShooterSubsystem shooter, CommandSwerveDrivetrain drive) {
